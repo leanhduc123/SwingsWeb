@@ -1,21 +1,19 @@
 import React from 'react'
-import style from '../../css/card.module.css'
+import { Col } from 'react-bootstrap';
+import style from '../../css/card.css'
 
 export const Card = (props) => {
-    const {imgSrc, header, description} = props;
+    const { product } = props;
     return (
-        <div class="h-100" className={style.card}>
-            <div class="h-50">
-                <img
-                    src="https://imgsv.imaging.nikon.com/lineup/dslr/df/img/sample/img_02_l.jpg"
-                    className={style.img} />
+        <Col md="3" className="item">
+            <div>
+                <img className="img2" src={product.img[1]} alt={product.name} />
+                <img className="img1" src={product.img[0]} alt={product.name} />
             </div>
-            <div className={style.span}>
-                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+            <div className="namePrice">
+                <a href="/" className="name">{product.name}</a>
+                <div className="price">{product.price}</div>
             </div>
-            <div className={style.p}>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-        </div>
+        </Col>
     )
 }

@@ -1,0 +1,56 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    transition: all 0.3s linear;
+}
+
+.item{
+    display: block;
+    width: 262px;
+    height: -moz-max-content;
+    height: fit-content;
+    padding: 0 27px;
+    box-sizing: border-box;
+}
+
+.namePrice{
+    padding: 13px 0px;
+    height: 80px;
+}
+
+.item .img1, .img2{
+    width: 231px;
+    height: 231px;
+}
+
+.img1{
+    position: absolute;
+    top: 0;
+    left: 27px;
+}
+
+.name{ 
+    font-size: 13px;
+    text-decoration: none;
+    color: rgb(42, 40, 40);
+}
+
+.name:hover{
+    color: rgb(241, 179, 179);
+}
+
+.price{
+    font-size: 13px;
+    color: rgb(121, 116, 116);
+    position: absolute;
+    bottom: 17px;
+}
+
+.item:hover .img1{
+    visibility: hidden;
+    opacity: 0;
+    transition:visibility 0.3s linear,opacity 0.3s linear;
+}
+
+
