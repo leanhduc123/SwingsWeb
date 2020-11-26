@@ -8,48 +8,48 @@ export const Cart = () => {
     return (
         <div>
             <Container style={{ minHeight: "700px"}}>
-                <div class="title">Shopping cart</div>
-                <div class="removeAll ptr">
+                <div className="title">Shopping cart</div>
+                <div className="removeAll ptr">
                     <FontAwesomeIcon className="deleteBtn" icon={faTrash} />
                     <span>Remove all</span>
                 </div>
-                <div class="d-flex">
-                    <div class="buyList">
-                        <div class="card">
+                <div className="d-flex">
+                    <div className="buyList">
+                        <div className="card">
                             <img src="" alt="img"/>
-                            <div class="info">
-                                <div class="name">Custom T-shirt</div>
-                                <div class="SKU">SKU: SC_TSHIRT</div>
+                            <div className="info">
+                                <div className="name">Custom T-shirt</div>
+                                <div className="SKU">SKU: SC_TSHIRT</div>
                                 <FontAwesomeIcon className="deleteBtn ptr" icon={faTrash} />
                             </div>
-                            <div class="price">$15.00</div>
-                            <div class="quantity">
-                                <div class="decBtn ptr">-</div>
+                            <div className="price">$15.00</div>
+                            <div className="quantity">
+                                <div className="decBtn ptr">-</div>
                                 <input type="text" name="quantities" id="number" value="1" />
-                                <div class="incBtn ptr">+</div>
+                                <div className="incBtn ptr">+</div>
                             </div>
-                            <div class="cost">$5.55</div>
+                            <div className="cost">$5.55</div>
                         </div>
                     </div>
-                    <div class="costTable">
-                        <div class="costTitle">ORDER SUMMARY</div>
-                        <div class="subTotal">
+                    <div className="costTable">
+                        <div className="costTitle">ORDER SUMMARY</div>
+                        <div className="subTotal">
                             <span>Sub-Total:</span>
-                            <div class="cost">$3.01</div>
+                            <div className="cost">$3.01</div>
                         </div>
-                        <div class="shipping">
+                        <div className="shipping">
                             <span>Shipping:(Ground)</span>
-                            <div class="cost">$0.00</div>
+                            <div className="cost">$0.00</div>
                         </div>
-                        <div class="tax">
+                        <div className="tax">
                             <span>Tax:</span>
-                            <div class="cost">$0.00</div>
+                            <div className="cost">$0.00</div>
                         </div>
-                        <div class="total">
+                        <div className="total">
                             <span>Total:</span>
-                            <div class="totalCost">$3.01</div>
+                            <div className="totalCost">$3.01</div>
                         </div>
-                        <div class="checkOut ptr">Checkout</div>
+                        <div className="checkOut ptr">Checkout</div>
                     </div>
                 </div>
             </Container>

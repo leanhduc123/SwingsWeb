@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navbar, NavDropdown, Carousel, Nav, Container, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import { Card } from "../card/Card"
 import '../../css/nav.css'
 import { Route, Switch } from 'react-router-dom'
@@ -12,25 +12,29 @@ import { faFacebookSquare, faInstagramSquare, faTwitterSquare, faYoutubeSquare }
 import { Register } from '../auth/Register'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { DropDownNav } from './DropDownNav'
+import { Comment } from '../Comments/Comment'
 
 const product = {
     name: "Áo khoác",
+    productId: "123123123",
     price: "650.000đ",
     img: [
         "http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg",
         "http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg"
-    ]
+    ],
+    size: ["M", "L", "XL", "XLL"],
+    link: "/"
 }
 
 const home = () => {
     return (
         <div>
             <Row>
-                <img src="http://theme.hstatic.net/200000201725/1000627199/14/slideshow_1.png?v=301" alt="Thời trang nam" />
+                <img className="carosel" src="http://theme.hstatic.net/200000201725/1000627199/14/slideshow_1.png?v=301" alt="Thời trang nam" />
             </Row>
 
             <Row className="titl">
-                <a href="/">NEW ARRIVAL</a>
+                <a href="/collections/new-arrival">NEW ARRIVAL</a>
             </Row>
 
             <Container>
@@ -47,7 +51,7 @@ const home = () => {
             </Container>
 
             <Row className="titl">
-                <a href="/">SALE UP TO 50%</a>
+                <a href="/collections/sale-50%">SALE UP TO 50%</a>
             </Row>
 
             <Container>
@@ -67,40 +71,68 @@ const home = () => {
 }
 
 export const Home = () => {
+    const linkList =
+        [{ type: "SALE OFF 50%", link: "/collections/sale-50" },
+        { type: "ÁO", link: "/collections/ao" },
+        { type: "ÁO SƠ MI", link: "/collections/ao-so-mi" },
+        { type: "ÁO THUN", link: "/collections/ao-thun" },
+        { type: "ÁO POLO", link: "/collections/ao-polo" },
+        { type: "ÁO VEST", link: "/collections/ao-vest" },
+        { type: "QUẦN", link: "/collections/quan/" },
+        { type: "QUẦN JEANS", link: "/collections/quan-jeans" },
+        { type: "QUẦN DÀI", link: "/collections/quan-dai" },
+        { type: "QUẦN TÂY", link: "/collections/quan-tay" },
+        { type: "QUẦN SHORT", link: "/collections/quan-short" },
+        { type: "QUẦN KAKI", link: "/collections/quan-kaki" },
+        { type: "BALO-TÚI XÁCH", link: "/collections/balo-tui-xach" },
+        { type: "GIÀY DÉP", link: "/collections/giay-dep" },
+        { type: "GIẦY DA", link: "/collections/giay-da" },
+        { type: "PHỤ KIỆN KHÁC", link: "/collections/phu-kien" },
+        { type: "UNDERWEAR", link: "/collections/underwear" },
+        { type: "VỚ", link: "/collections/vo" },
+        { type: "THẮT LƯNG", link: "/collections/that-lung" },
+        { type: "VÍ", link: "/collections/vi" },
+        { type: "ÁO KHOÁC", link: "/collections/ao-khoac" },
+        { type: "ÁO KHOÁC BÒ", link: "/collections/ao-khoac-bo" },
+        { type: "ÁO NỈ", link: "/collections/ao-ni" },
+        { type: "ÁO HOODIE", link: "/collections/ao-hoodie" },
+        { type: "ÁO KHOÁC DA", link: "/collections/ao-khoac-da" },
+        { type: "BÌNH LUẬN", link: "/binh-luan" },
+        ];
     const list = [{
         type: "SẢN PHẨM",
         link: "/",
         sublist: [
-            { type: "SALE OFF 50%", link: "/" },
+            { type: "SALE OFF 50%", link: "/collections/sale-50" },
             {
-                type: "ÁO", link: "/", sublist: [
-                    { type: "ÁO SƠ MI", link: "/" },
-                    { type: "ÁO THUN", link: "/" },
-                    { type: "ÁO POLO", link: "/" },
-                    { type: "ÁO VEST", link: "/" },
+                type: "ÁO", link: "/collections/ao", sublist: [
+                    { type: "ÁO SƠ MI", link: "/collections/ao-so-mi" },
+                    { type: "ÁO THUN", link: "/collections/ao-thun" },
+                    { type: "ÁO POLO", link: "/collections/ao-polo" },
+                    { type: "ÁO VEST", link: "/collections/ao-vest" },
                 ]
             },
             {
-                type: "QUẦN", link: "/", sublist: [
-                    { type: "QUẦN JEANS", link: "/" },
-                    { type: "QUẦN DÀI", link: "/" },
-                    { type: "QUẦN TÂY", link: "/" },
-                    { type: "QUẦN SHORT", link: "/" },
-                    { type: "QUẦN KAKI", link: "/" },
+                type: "QUẦN", link: "/collections/quan", sublist: [
+                    { type: "QUẦN JEANS", link: "/collections/quan-jeans" },
+                    { type: "QUẦN DÀI", link: "/collections/quan-dai" },
+                    { type: "QUẦN TÂY", link: "/collections/quan-tay" },
+                    { type: "QUẦN SHORT", link: "/collections/quan-short" },
+                    { type: "QUẦN KAKI", link: "/collections/quan-kaki" },
                 ]
             },
-            { type: "BALO-TÚI XÁCH", link: "/" },
+            { type: "BALO-TÚI XÁCH", link: "/collections/balo-tui-xach" },
             {
-                type: "GIÀY DÉP", link: "/", sublist: [
-                    { type: "GIẦY DA", link: "/" }
+                type: "GIÀY DÉP", link: "/collections/giay-dep", sublist: [
+                    { type: "GIẦY DA", link: "/collections/giay-da" }
                 ]
             },
             {
-                type: "PHỤ KIỆN KHÁC", link: "/", sublist: [
-                    { type: "UNDERWEAR", link: "/" },
-                    { type: "VỚ", link: "/" },
-                    { type: "THẮT LƯNG", link: "/" },
-                    { type: "VÍ", link: "/" }
+                type: "PHỤ KIỆN KHÁC", link: "/collections/phu-kien", sublist: [
+                    { type: "UNDERWEAR", link: "/collections/underwear" },
+                    { type: "VỚ", link: "/collections/vo" },
+                    { type: "THẮT LƯNG", link: "/collections/that-lung" },
+                    { type: "VÍ", link: "/collections/vi" }
                 ]
             },
         ]
@@ -108,28 +140,30 @@ export const Home = () => {
         type: "SP MÙA ĐÔNG",
         link: "/",
         sublist: [
-            { type: "ÁO KHOÁC", link: "/" },
-            { type: "ÁO KHOÁC BÒ", link: "/" },
-            { type: "ÁO NỈ", link: "/" },
-            { type: "ÁO HOODIE", link: "/" },
-            { type: "ÁO KHOÁC DA", link: "/" },
+            { type: "ÁO KHOÁC", link: "/collections/ao-khoac" },
+            { type: "ÁO KHOÁC BÒ", link: "/collections/ao-khoac-bo" },
+            { type: "ÁO NỈ", link: "/collections/ao-ni" },
+            { type: "ÁO HOODIE", link: "/collections/ao-hoodie" },
+            { type: "ÁO KHOÁC DA", link: "/collections/ao-khoac-da" },
         ]
     }, {
         type: "SALE UPTO 50%",
-        link: "/"
+        link: "/collections/sale-50"
     }, {
         type: "BÌNH LUẬN",
-        link: "/"
+        link: "/binh-luan"
     }]
 
     return (
         <div>
-            <div class="navBarMain">
+            <div className="navBarMain">
                 <Container>
                     <Row className="align-items-center">
-                        <Col lg='3' className="brand">SWINGS</Col>
+                        <Col lg='3' className="brand">
+                            <a href="/">SWINGS</a>
+                        </Col>
                         <Col lg='7' className="searchBar">
-                            <form class="search-box" action="action_page.php">
+                            <form className="search-box" action="/search">
                                 <input type="text" placeholder="Nhập tên mã hoặc tên sản phẩm.." name="search" />
                                 <FontAwesomeIcon className="search-icon" icon={faSearch} />
                             </form>
@@ -156,7 +190,14 @@ export const Home = () => {
             <Switch>
                 <Route path='/cart' component={Cart} />
                 <Route path='/info' component={ProductInfo} />
-                <Route path='/product' component={ProductList} />
+                <Route path='/comments' component={Comment} />
+                {
+                    linkList.map(item => {
+                        return <Route path={item.link} render={() => (
+                            <ProductList type={item.type} link={item.link} />
+                        )} />
+                    })
+                }
                 <Route path="/login" exact component={Login} />
                 <Route path="/register" exact component={Register} />
                 <Route path='/' component={home} />

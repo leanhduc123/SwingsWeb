@@ -38,6 +38,7 @@
 
 .name:hover{
     color: rgb(241, 179, 179);
+    text-decoration: none;
 }
 
 .price{

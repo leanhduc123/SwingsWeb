@@ -1,8 +1,8 @@
 import React from 'react'
-import { Container, Form, Button, Row } from 'react-bootstrap'
+import { Container, Form, Button } from 'react-bootstrap'
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { Link, Route, Switch } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const validationSchema = yup.object().shape({
     username: yup
@@ -31,7 +31,7 @@ export const Login = () => {
 
     return (
         <div>
-            <div class="p-0 bg-dark text-white" style={{ height: 50 }}>
+            <div className="p-0 bg-dark text-white" style={{ height: 50 }}>
                 <Container>
                     <h2>LOG IN</h2>
                 </Container>
