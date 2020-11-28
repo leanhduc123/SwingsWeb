@@ -23,34 +23,6 @@ app.set("views", "views");
 
 // Set the body parsers for form and files
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(
-  multer({
-    storage: multer.diskStorage({
-      destination: (req, file, callback) => {
-        callback(null, "images");
-      },
-      filename: (req, file, callback) => {
-        // TODO: pick a better way for name the files
-        callback(null,file.originalname);
-      }
-    }),
-    fileFilter: (req, file, callback) => {
-      if (
-        file.mimetype === "image/png" ||
-        file.mimetype === "image/jpg" ||
-        file.mimetype === "image/jpeg"
-      ) {
-        callback(null, true);
-      } else {
-        callback(null, false);
-      }
-    }
-  }).single("image")
-);
-
-// Setup static files access
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/images", express.static(path.join(__dirname, "images")));
 
 // Setup session related utilities
 const store = new MongoDBStore({
