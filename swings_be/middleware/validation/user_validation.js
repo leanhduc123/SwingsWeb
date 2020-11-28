@@ -4,9 +4,9 @@ const User = require("../../models/users");
 exports.login = [
   body("email")
     .isEmail()
-    .withMessage("Please enter a valid email address.")
+    .withMessage("Vui lòng nhập email")
     .normalizeEmail(),
-  body("password", "Password has to be valid.")
+  body("password", "Vui lòng nhập password")
     .isLength({ min: 5 })
     .isAlphanumeric()
     .trim()
@@ -15,12 +15,12 @@ exports.login = [
 exports.register = [
   check("email")
     .isEmail()
-    .withMessage("Please enter a valid email.")
+    .withMessage("Email không hợp lệ")
     .custom((value, { req }) => {
       return User.findOne({ email: value }).then(userDoc => {
         if (userDoc) {
           return Promise.reject(
-            "E-Mail exists already, please pick a different one."
+            "Email đã tồn tại"
           );
         }
       });
@@ -28,7 +28,7 @@ exports.register = [
     .normalizeEmail(),
   body(
     "password",
-    "Please enter a password with only numbers and text and at least 5 characters."
+    "Password có độ dài ít nhất 5 ký tự"
   )
     .isLength({ min: 5 })
     .isAlphanumeric()
@@ -37,7 +37,7 @@ exports.register = [
     .trim()
     .custom((value, { req }) => {
       if (value !== req.body.password) {
-        throw new Error("Passwords have to match!");
+        throw new Error("Mật khẩu không phù hợp ");
       }
       return true;
     })
