@@ -1,32 +1,119 @@
-require('dotenv').config()
+const path = require("path");
+
 const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
+const flash = require("connect-flash");
+const multer = require("multer");
+
+const adminRoutes = require("./routes/admin");
+const productRoutes = require("./routes/product");
+const userRoutes = require("./routes/user");
+const errorController = require("./API/error");
+const User = require("./models/users");
+const Config = require("./config");
+
 const app = express();
-const bodyParser = require('body-parser');
-const mongoose = require("mongoose")
-const port = 3000;
 
-const RouterUser = require("./routers/User")
-const RouterProduct = require("./routers/Product")
+app.set("view engine", "ejs");
+app.set("views", "views");
 
-// Kết nối database
-mongoose.connect('mongodb://localhost/Log-in', {
-    useNewUrlParser: true, 
-    useUnifiedTopology: true
-})
-.then(function() {
-    console.log("Successfully connected to the database");    
-}).catch(function(err) {
-    console.log('Could not connect to the database. Exiting now...', err);
-    process.exit();
+// Set the body parsers for form and files
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  multer({
+    storage: multer.diskStorage({
+      destination: (req, file, callback) => {
+        callback(null, "images");
+      },
+      filename: (req, file, callback) => {
+        // TODO: pick a better way for name the files
+        callback(null,file.originalname);
+      }
+    }),
+    fileFilter: (req, file, callback) => {
+      if (
+        file.mimetype === "image/png" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "image/jpeg"
+      ) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    }
+  }).single("image")
+);
+
+// Setup static files access
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join(__dirname, "images")));
+
+// Setup session related utilities
+const store = new MongoDBStore({
+  uri: Config.MONGODB_URI,
+  collection: "sessions",
+  // collection: "Product",
+  // collection: "Order"
+});
+const csrfProtection = csrf();
+app.use(
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
+);
+app.use(csrfProtection);
+app.use(flash());
+
+// Setup locals for request
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
+// Bind user to the request Object
+app.use(async (req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+  try {
+    const user = await User.findById(req.session.user._id);
+    if (!user) {
+      return next();
+    }
+    req.user = user;
+    next();
+  } catch (err) {
+    next(new Error(err));
+  }
+});
 
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
-app.use(RouterUser)
-app.use(RouterProduct)
+// Setup routes
+app.use("/admin", adminRoutes);
+app.use(productRoutes);
+app.use(userRoutes);
 
+//Control the errors
+app.get("/500", errorController.get500);
+app.use(errorController.get404);
 
-app.listen(port, function(){
-    console.log("Server listening port",+port)
-})
+app.use((error, req, res, next) => {
+  // TODO: Maybe a better error handling we needed
+  console.log("*** Error", error);
+  res.redirect("/500");
+});
+
+// Connect to the database and start server
+try {
+  mongoose.connect(Config.MONGODB_URI);
+  app.listen(Config.PORT);
+} catch (error) {
+  console.log(error);
+}
