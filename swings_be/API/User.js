@@ -58,7 +58,7 @@ exports.postLogin = async (req, res, next) => {
       return res.status(422).render('auth/login', {
         path: '/login',
         pageTitle: 'Login',
-        errorMessage: 'Invalid email or password.',
+        errorMessage: 'Email hoặc mật khẩu không hợp lệ.',
         oldInput: {
           email: email,
           password: password
@@ -77,7 +77,7 @@ exports.postLogin = async (req, res, next) => {
     res.status(422).render('auth/login', {
       path: '/login',
       pageTitle: 'Login',
-      errorMessage: 'Invalid email or password.',
+      errorMessage: 'Email hoặc mật khẩu không hợp lệ',
       oldInput: {
         email: email,
         password: password
