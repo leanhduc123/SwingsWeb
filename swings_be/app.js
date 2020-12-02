@@ -1,91 +1,42 @@
-const path = require("path");
+const express = require( 'express')
+const path = require( 'path')
+const mongoose = require( 'mongoose')
+const bodyParser = require( 'body-parser')
+const config = require('./config')
+const userRoute = require('./routes/user')
+const productRoute = require( './routes/product')
+const orderRoute = require( './routes/order')
+const uploadRoute = require('./routes/upload')
 
-const express = require("express");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const session = require("express-session");
-const MongoDBStore = require("connect-mongodb-session")(session);
-const csrf = require("csurf");
-const flash = require("connect-flash");
-const multer = require("multer");
-
-const adminRoutes = require("./routes/admin");
-const productRoutes = require("./routes/product");
-const userRoutes = require("./routes/user");
-const errorController = require("./API/error");
-const User = require("./models/users");
-const Config = require("./config");
+const mongodbUrl = config.MONGODB_URL;
+mongoose
+  .connect(mongodbUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  })
+  .catch((error) => console.log(error.reason));
 
 const app = express();
 
-app.set("view engine", "ejs");
-app.set("views", "views");
+app.use(bodyParser.json());
 
-// Set the body parsers for form and files
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/api/uploads', uploadRoute);
+app.use('/api/users', userRoute);
+app.use('/api/products', productRoute);
+app.use('/api/orders', orderRoute);
 
-// Setup session related utilities
-const store = new MongoDBStore({
-  uri: Config.MONGODB_URI,
-  collection: "sessions",
-  // collection: "Product",
-  // collection: "Order"
-});
-const csrfProtection = csrf();
-app.use(
-  session({
-    secret: "my secret",
-    resave: false,
-    saveUninitialized: false,
-    store: store
-  })
-);
-app.use(csrfProtection);
-app.use(flash());
+app.get('/api/config/paypal', (req, res) => {
+  res.send(config.PAYPAL_CLIENT_ID);
 
-// Setup locals for request
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  next();
 });
 
-// Bind user to the request Object
-app.use(async (req, res, next) => {
-  if (!req.session.user) {
-    return next();
-  }
-  try {
-    const user = await User.findById(req.session.user._id);
-    if (!user) {
-      return next();
-    }
-    req.user = user;
-    next();
-  } catch (err) {
-    next(new Error(err));
-  }
+app.use('/uploads', express.static(path.join(__dirname, '/../uploads')));
+app.use(express.static(path.join(__dirname, '/../frontend/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(`${__dirname}/../frontend/build/index.html`));
 });
 
-// Setup routes
-app.use("/admin", adminRoutes);
-app.use(productRoutes);
-app.use(userRoutes);
-
-//Control the errors
-app.get("/500", errorController.get500);
-app.use(errorController.get404);
-
-app.use((error, req, res, next) => {
-  // TODO: Maybe a better error handling we needed
-  console.log("*** Error", error);
-  res.redirect("/500");
+app.listen(config.PORT, () => {
+  console.log('Server started at http://localhost:5000');
 });
-
-// Connect to the database and start server
-try {
-  mongoose.connect(Config.MONGODB_URI);
-  app.listen(Config.PORT);
-} catch (error) {
-  console.log(error);
-}
