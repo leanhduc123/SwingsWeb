@@ -20,7 +20,7 @@ router.put('/:id', isAuth, async (req, res) => {
       token: getToken(updatedUser),
     });
   } else {
-    res.status(404).send({ message: 'User Not Found' });
+    res.status(404).send({ message: 'Không tìm thấy user' });
   }
 });
 
@@ -38,7 +38,7 @@ router.post('/signin', async (req, res) => {
       token: getToken(signinUser),
     });
   } else {
-    res.status(401).send({ message: 'Invalid Email or Password.' });
+    res.status(401).send({ message: 'Email hoặc mật khẩu không đúng' });
   }
 });
 
@@ -58,23 +58,10 @@ router.post('/register', async (req, res) => {
       token: getToken(newUser),
     });
   } else {
-    res.status(401).send({ message: 'Invalid User Data.' });
+    res.status(401).send({ message: 'Tạo tài khoản không thành công' });
   }
 });
 
-router.get('/createadmin', async (req, res) => {
-  try {
-    const user = new User({
-      name: 'Basir',
-      email: 'admin@example.com',
-      password: '1234',
-      isAdmin: true,
-    });
-    const newUser = await user.save();
-    res.send(newUser);
-  } catch (error) {
-    res.send({ message: error.message });
-  }
-});
+
 
 module.exports = router;
