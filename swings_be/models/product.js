@@ -1,27 +1,55 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const productSchema = mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
+    name: { 
+        type: String, 
+        required: true 
+    },
+    slug: { 
+        type: String, 
+        required: true, 
+        unique: true 
+    },
+    price: { 
+        type: Number, 
+        required: true 
+    },
+    stock: { 
+        type: Number, 
+        required: true },
+    description: { 
+        type: String 
+    },
 
-const reviewSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    rating: { type: Number, default: 0 },
-    comment: { type: String, required: true },
-  },
-  {
-    timestamps: true,
-  }
-);
-const prodctSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  image: { type: String, required: true },
-  brand: { type: String, required: true },
-  price: { type: Number, default: 0, required: true },
-  category: { type: String, required: true },
-  countInStock: { type: Number, default: 0, required: true },
-  description: { type: String, required: true },
-  rating: { type: Number, default: 0, required: true },
-  numReviews: { type: Number, default: 0, required: true },
-  reviews: [reviewSchema],
+    productPic: [
+        {
+            img: String
+        }
+    ],
+    reviews: [
+        {
+            _id: mongoose.Schema.Types.ObjectId,
+            userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+            review: String,
+            createdAt: Date
+        }
+    ],
+    // keyword: {type: String},
+    category: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Category', 
+        required: true  
+    },
+    // createdAt: { type: Date, default: Date.now },
+    createdBy: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Admin' 
+    },
+    // updatedAt: Date,
+    updatedBy: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Admin' 
+    }
 });
 
-module.exports =  productModel = mongoose.model('Product', prodctSchema);
-
+module.exports = mongoose.model('Product', productSchema);

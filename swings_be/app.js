@@ -1,42 +1,47 @@
-const express = require( 'express')
-const path = require( 'path')
-const mongoose = require( 'mongoose')
-const bodyParser = require( 'body-parser')
-const config = require('./config')
-const userRoute = require('./routes/user')
-const productRoute = require( './routes/product')
-const orderRoute = require( './routes/order')
-const uploadRoute = require('./routes/upload')
-
-const mongodbUrl = config.MONGODB_URL;
-mongoose
-  .connect(mongodbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-  })
-  .catch((error) => console.log(error.reason));
-
+const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
+const cors = require('cors');
+const bodyParser = require('body-parser')
 
-app.use(bodyParser.json());
+const http = require('http');
+const port = 3000
 
-app.use('/api/uploads', uploadRoute);
-app.use('/api/users', userRoute);
-app.use('/api/products', productRoute);
-app.use('/api/orders', orderRoute);
+const authenticate = require('./middleware/authenticate');
+const adminRoutes = require('./routes/admins');
+const categoryRoutes = require('./routes/categories');
+const userRoutes = require('./routes/users');
+const productRoutes = require('./routes/products');
+const cartRoutes = require('./routes/cart');
+const orderRoutes = require('./routes/orders');
 
-app.get('/api/config/paypal', (req, res) => {
-  res.send(config.PAYPAL_CLIENT_ID);
-
+mongoose.connect("mongodb://localhost/backend", {
+  useUnifiedTopology: true,
+  useNewUrlParser: true
 });
 
-app.use('/uploads', express.static(path.join(__dirname, '/../uploads')));
-app.use(express.static(path.join(__dirname, '/../frontend/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(`${__dirname}/../frontend/build/index.html`));
-});
 
-app.listen(config.PORT, () => {
-  console.log('Server started at http://localhost:5000');
-});
+app.use(cors());
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
+
+app.use('/admin', adminRoutes);
+app.use('/category', categoryRoutes);
+app.use('/', userRoutes); 
+app.use('/products', productRoutes);
+app.use('/cart', authenticate, cartRoutes);
+app.use('/order', authenticate, orderRoutes);
+
+app.use((req, res, next) => {
+    res.status(404).json({
+        message: 'Not Found'
+    })
+})
+
+const server = http.createServer(app);
+server.listen(port);
+//module.exports = app;
