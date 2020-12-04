@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const authenticate  = require('../middleware/authenticate');
+const is_auth  = require('../middleware/auth-token');
 
 const User = require('../models/user');
 const UserAddress = require('../models/user_Address');
@@ -109,7 +109,7 @@ router.post('/login', (req, res, next) => {
 
 
 });
-router.post('/address', authenticate, (req, res, next) => {
+router.post('/address', is_auth, (req, res, next) => {
     UserAddress.findOne({"user": req.body.userId})
     .exec()
     .then(user => {
@@ -148,7 +148,7 @@ router.post('/address', authenticate, (req, res, next) => {
     });
 
 });
-router.get('/get-addresses/:userId', authenticate, (req, res, next) => {
+router.get('/get-address/:userId', is_auth, (req, res, next) => {
     UserAddress.findOne({"user": req.params.userId})
     .select('_id user address')
     .exec()

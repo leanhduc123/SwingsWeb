@@ -5,7 +5,7 @@ const Order = require('../models/order');
 const CartItem = require('../models/cart');
 const UserAddress = require('../models/user_Address');
 
-router.post('/create', (req, res, next) => {
+router.post('/add-order', (req, res, next) => {
     const order = new Order({
         _id: new mongoose.Types.ObjectId(),
         user: req.body.user,

@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const CartItem = require('../models/cart');
 
 
-router.post('/add', (req, res, next) => {
+router.post('/add-cart', (req, res, next) => {
 
     CartItem.findOne({user: req.body.user})
     .exec()

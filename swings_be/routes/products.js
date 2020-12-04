@@ -3,10 +3,10 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Product = require('../models/product');
 const Category = require('../models/category');
-const authenticate = require('../middleware/authenticate');
+const is_auth = require('../middleware/auth-token');
 
 
-router.post('/create', authenticate, (req, res, next) => {
+router.post('/add-product', is_auth, (req, res, next) => {
     const slug = req.body.name.replace(/ /g, '-') +'-'+ Date.now();
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
@@ -63,8 +63,6 @@ router.get('/:categorySlug', (req, res, next) => {
     .then(category => {
         if(category){
             if(category.parent === ""){
-                //its a parent category
-                //Now find Chidrens
                 Category.find({"parent": category._id})
                 .select('_id name')
                 .exec()

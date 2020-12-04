@@ -72,7 +72,7 @@ router.post('/login', (req, res, next) => {
                 message: 'Đã xảy ra lỗi'
             });
         }else{
-            // Load hash from your password DB.
+            // Đọc mật khẩu từ database
             bcrypt.compare(req.body.password, user[0].password, function(err, result) {
                 console.log('err', err);
                 console.log('result', result);
@@ -83,8 +83,7 @@ router.post('/login', (req, res, next) => {
                     });
                 }else{
                     if(result){
-
-                        // Create token
+                        // Tạo token
                         const payload = {
                             userId: user[0]._id,
                             iat:  Math.floor(Date.now() / 1000) - 30,
