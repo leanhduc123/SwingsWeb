@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "../../css/adminlogin.css"
+import { Container } from 'react-bootstrap';
 
 export const AdminLogin = () => {
   const initialValues_ = {
@@ -24,7 +25,7 @@ export const AdminLogin = () => {
   const onSubmit_ = (value) => {
     console.log(value);
   };
-  function onClick_() {
+  function onClick_Login() {
     console.log("Clicked to Login!");
   }
   return (
@@ -35,27 +36,38 @@ export const AdminLogin = () => {
     >
       {(formik) => {
         return (
-          <Form className="form">
-            <p className="header">Register</p>
-            <label>Username</label>
-            <Field className="field" type="text" name="username" />
-            <ErrorMessage className="error" name="username" component="div" />
-            <label>Password</label>
-            <Field className="field" type="password" name="password" />
-            <ErrorMessage className="error" name="password" component="div" />
-            <label>Confirm Password</label>
-            <Field className="field" type="password" name="confirmPassword" />
-            <ErrorMessage
-              className="error"
-              name="confirmPassword"
-              component="div"
-            />
+          <Container className="adminContainer">
+            <Form>
+              <p className="header">Register</p>
+              <label>Username</label>
+              <Field className="field" type="text" name="username" />
+              <ErrorMessage className="error" name="username" component="div" />
+              <label>Password</label>
+              <Field className="field" type="password" name="password" />
+              <ErrorMessage className="error" name="password" component="div" />
+              <label>Confirm Password</label>
+              <Field className="field" type="password" name="confirmPassword" />
+              <ErrorMessage
+                className="error"
+                name="confirmPassword"
+                component="div"
+              />
 
-            <button type="submit" disabled={!formik.isValid}>
-              Register
-            </button>
-            <a href="#" onClick={onClick_}>Already have an account? Login</a>
-          </Form>
+              <div className = "button-wrapper">
+                <button
+                  className="button"
+                  type="submit"
+                  disabled={!formik.isValid}
+                >
+                  Register
+                </button>
+              </div>
+
+              <a href="#" onClick={onClick_Login}>
+                Already have an account? Login
+              </a>
+            </Form>
+          </Container>
         );
       }}
     </Formik>

@@ -41,7 +41,7 @@
     text-decoration: none;
 }
 
-.price{
+.namePrice .price{
     font-size: 13px;
     color: rgb(121, 116, 116);
     position: absolute;

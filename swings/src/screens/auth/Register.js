@@ -1,98 +1,75 @@
-import React from 'react';
-import { Container, Form, Button } from 'react-bootstrap';
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { Link } from "react-router-dom";
-
-const validationSchema = yup.object().shape({
-    username: yup
-        .string()
-        .min(6, "Username's length must be greater than 6!")
-        .required("Username is required!"),
-    password: yup
-        .string()
-        .min(6, "Password's length must be greater than 6!")
-        .required("Password is required!"),
-    confirmPassword: yup
-        .string()
-        .oneOf([yup.ref("password"), ""], "Confirm password not matched")
-        .required("Confirm password is required!"),
-});
+import React from 'react'
+import { Container } from 'react-bootstrap'
+import * as Yup from "yup";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import "../../css/register.css"
 
 export const Register = () => {
-    const formik = useFormik({
-        initialValues: {
-            username: "",
-            password: "",
-            confirmPassword: "",
-        },
-        validationSchema: validationSchema,
-        onSubmit: (values) => {
-            console.log(values)
-        },
+    const initialValues_ = {
+      username: "",
+      password: "",
+      confirmPassword: "",
+    };
+  
+    const validationSchema_ = Yup.object().shape({
+      username: Yup.string()
+        .min(6, "Username's length must be greater than 6!")
+        .required("Username is required!"),
+      password: Yup.string()
+        .min(6, "Password's length must be greater than 6!")
+        .required("Password is required!"),
+      confirmPassword: Yup.string()
+        .oneOf([Yup.ref("password"), ""], "Confirm password not matched")
+        .required("Confirm password is required!"),
     });
-
-    const { handleSubmit, handleChange, handleBlur, touched, errors } = formik;
-
+    const onSubmit_ = (value) => {
+      console.log(value);
+    };
+    function onClick_Login() {
+      console.log("Clicked to Login!");
+    }
     return (
-        <div style={{ height: "550px"}}>
-            <div className="p-0 bg-dark text-white" style={{ height: 50 }}>
-                <Container>
-                    <h2>REGISTER</h2>
-                </Container>
-            </div>
-            <Container >
-                <Form className="col-8 m-auto" style={{ height: "500px"}} onSubmit={handleSubmit}>
-                    <Form.Group controlId="formUsername">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter username"
-                            name="username"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            isInvalid={touched.username && errors.username}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errors.username}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId="formPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            placeholder="Password"
-                            name="password"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            isInvalid={touched.password && errors.password}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errors.password}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId="formConfirmPassword">
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            placeholder="Password"
-                            name="confirmPassword"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            isInvalid={touched.confirmPassword && errors.confirmPassword}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errors.confirmPassword}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Text as={Link} to="/Login" className="text-muted">
-                        Already have an account?
-                    </Form.Text>
-                    <Button variant="primary" type="submit" >
-                        Register
-                    </Button>
-                </Form>
+      <Formik
+        initialValues={initialValues_}
+        validationSchema={validationSchema_}
+        onSubmit={onSubmit_}
+      >
+        {(formik) => {
+          return (
+            <Container className="register">
+              <Form>
+                <p className="header">Register</p>
+                <label>Username</label>
+                <Field className="field" type="text" name="username" />
+                <ErrorMessage className="error" name="username" component="div" />
+                <label>Password</label>
+                <Field className="field" type="password" name="password" />
+                <ErrorMessage className="error" name="password" component="div" />
+                <label>Confirm Password</label>
+                <Field className="field" type="password" name="confirmPassword" />
+                <ErrorMessage
+                  className="error"
+                  name="confirmPassword"
+                  component="div"
+                />
+  
+                <div className = "button-wrapper">
+                  <button
+                    className="button"
+                    type="submit"
+                    disabled={!formik.isValid}
+                  >
+                    Submit
+                  </button>
+                </div>
+  
+                <a href="/login" onClick={onClick_Login}>
+                  Already have an account? Login
+                </a>
+              </Form>
             </Container>
-        </div>
-    )
-}
+          );
+        }}
+      </Formik>
+    );
+  }

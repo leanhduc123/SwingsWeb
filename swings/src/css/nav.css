@@ -3,6 +3,7 @@
     padding: 0px;
     box-sizing: border-box;
     transition: color 0.35s linear;
+    font-family: 'Quicksand', sans-serif !important
 }
 .navBarMain {
     background-color: rgb(228, 235, 238);
@@ -39,6 +40,7 @@ form.search-box .search-icon {
     height: 30px;
 }
 .icon {
+    color: black;
     margin: 5px;
     float: right;
 }
@@ -73,6 +75,7 @@ form.search-box .search-icon {
     padding-top: 20px;
     margin-right: 20px;
     max-width: 11.66667%;
+    z-index: 1;
 }
 
 .type>div{

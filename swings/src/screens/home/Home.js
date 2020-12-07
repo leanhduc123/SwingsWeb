@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
 import { Card } from "../card/Card"
 import '../../css/nav.css'
-import { Route, Switch } from 'react-router-dom'
+import { Link, Route, Switch } from 'react-router-dom'
 import { Cart } from '../products/Cart'
 import { ProductInfo } from '../products/ProductInfo'
 import { ProductList } from '../products/ProductList'
@@ -169,8 +169,12 @@ export const Home = () => {
                             </form>
                         </Col>
                         <Col lg='2' className="icon-box">
-                            <FontAwesomeIcon className="icon" icon={faShoppingCart} />
-                            <FontAwesomeIcon className="icon" icon={faUserCircle} />
+                            <Link to="/cart" className="icon">
+                                <FontAwesomeIcon  icon={faShoppingCart}/>
+                            </Link>
+                            <Link to="/login" className="icon">
+                                <FontAwesomeIcon  icon={faUserCircle} />
+                            </Link>
                         </Col>
                     </Row>
                 </Container>
@@ -187,7 +191,7 @@ export const Home = () => {
                 </Container>
             </Row>
 
-            <Switch>
+            <Switch className="main_body">
                 <Route path='/cart' component={Cart} />
                 <Route path='/info' component={ProductInfo} />
                 <Route path='/comments' component={Comment} />
@@ -198,7 +202,7 @@ export const Home = () => {
                         )} />
                     })
                 }
-                <Route path="/login" exact component={Login} />
+                <Route path="/login" component={Login} />
                 <Route path="/register" exact component={Register} />
                 <Route path='/' component={home} />
             </Switch>
