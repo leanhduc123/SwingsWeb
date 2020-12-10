@@ -13,8 +13,10 @@ import { Register } from '../auth/Register'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { DropDownNav } from './DropDownNav'
 import { Comment } from '../Comments/Comment'
+import { Account } from '../user/Account'
+import { Transactions } from '../user/Transactions'
 
-const product = {
+const product = [{
     name: "Áo khoác",
     productId: "123123123",
     price: "650.000đ",
@@ -24,7 +26,7 @@ const product = {
     ],
     size: ["M", "L", "XL", "XLL"],
     link: "/"
-}
+}]
 
 const home = () => {
     return (
@@ -39,31 +41,31 @@ const home = () => {
 
             <Container>
                 <Row>
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
                 </Row>
             </Container>
 
             <Row className="titl">
-                <a href="/collections/sale-50%">SALE UP TO 50%</a>
+                <a href="/collections/sale-50">SALE UP TO 50%</a>
             </Row>
 
             <Container>
                 <Row>
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
-                    <Card product={product} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
+                    <Card product={product[0]} />
                 </Row>
             </Container>
         </div>
@@ -164,7 +166,7 @@ export const Home = () => {
                         </Col>
                         <Col lg='7' className="searchBar">
                             <form className="search-box" action="/search">
-                                <input type="text" placeholder="Nhập tên mã hoặc tên sản phẩm.." name="search" />
+                                <input type="text" placeholder="Nhập tên sản phẩm.." name="search" />
                                 <FontAwesomeIcon className="search-icon" icon={faSearch} />
                             </form>
                         </Col>
@@ -202,8 +204,11 @@ export const Home = () => {
                         )} />
                     })
                 }
+                <Route path="/collections/:productId" name="product" component={ProductInfo}/>
                 <Route path="/login" component={Login} />
                 <Route path="/register" exact component={Register} />
+                <Route path="/account/orders/:id" component={Transactions}/>
+                <Route path="/account" component={Account} />
                 <Route path='/' component={home} />
             </Switch>
 

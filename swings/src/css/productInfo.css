@@ -133,5 +133,18 @@
     color: black;
 }
 
+.modal-box .modal-dialog{
+    max-width: 60%;
+}
+
+.modal-box .hd_img{
+    width: 100%;
+}
+
+.modal-box .modal-header h2{
+    margin-left: 300px;
+    font-size: 20px;
+}
+
 
 

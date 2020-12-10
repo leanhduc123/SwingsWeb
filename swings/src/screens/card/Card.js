@@ -1,5 +1,6 @@
 import React from 'react'
 import { Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import "../../css/card.css"
 
 export const Card = (props) => {
@@ -11,7 +12,7 @@ export const Card = (props) => {
                 <img href={product.link} className="img1" src={product.img[0]} alt={product.name} />
             </div>
             <div className="namePrice">
-                <a href={product.link} className="name">{product.name}</a>
+                <Link className="name" to={`/collections/${product.productId}`}>{product.name}</Link>
                 <div className="price">{product.price}.000đ</div>
             </div>
         </Col>

@@ -3,6 +3,19 @@ import { Container } from 'react-bootstrap'
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import "../../css/register.css"
+import axios from "axios"
+
+const validationSchema_ = Yup.object().shape({
+  username: Yup.string()
+    .min(6, "Username's length must be greater than 6!")
+    .required("Username is required!"),
+  password: Yup.string()
+    .min(6, "Password's length must be greater than 6!")
+    .required("Password is required!"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), ""], "Confirm password not matched")
+    .required("Confirm password is required!"),
+});
 
 export const Register = () => {
     const initialValues_ = {
@@ -11,19 +24,16 @@ export const Register = () => {
       confirmPassword: "",
     };
   
-    const validationSchema_ = Yup.object().shape({
-      username: Yup.string()
-        .min(6, "Username's length must be greater than 6!")
-        .required("Username is required!"),
-      password: Yup.string()
-        .min(6, "Password's length must be greater than 6!")
-        .required("Password is required!"),
-      confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password"), ""], "Confirm password not matched")
-        .required("Confirm password is required!"),
-    });
-    const onSubmit_ = (value) => {
-      console.log(value);
+    const onSubmit_ = (values) => {
+      axios
+        .post("http://localhost:5000/register", {
+          username: "12312",
+          email: values.username,
+          password: values.password,
+        })
+        .then(() => {
+          console.log(values)
+        })
     };
     function onClick_Login() {
       console.log("Clicked to Login!");
