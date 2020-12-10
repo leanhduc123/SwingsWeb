@@ -13,7 +13,7 @@ const adminSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    createdAt: Date
+    //createdAt: Date
 });
 
 module.exports = mongoose.model('Admin', adminSchema);

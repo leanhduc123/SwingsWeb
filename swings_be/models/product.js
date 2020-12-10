@@ -5,53 +5,55 @@ const productSchema = mongoose.Schema({
         type: String, 
         required: true 
     },
-    slug: { 
-        type: String, 
-        required: true, 
-        unique: true 
+    // slug: { 
+    //     type: String, 
+    //     required: true, 
+    //     unique: true 
+    // },
+    category: {
+        type: String,
+        required: true
+    },
+    SubCategory: {
+        type: String,
+    },
+    description: { 
+        type: String 
     },
     price: { 
         type: Number, 
         required: true 
     },
-    stock: { 
-        type: Number, 
-        required: true },
-    description: { 
+    discount: { 
         type: String 
     },
-
-    productPic: [
-        {
-            img: String
-        }
-    ],
-    reviews: [
+    size: [],
+    img: [],
+    rateting: [
         {
             _id: mongoose.Schema.Types.ObjectId,
             userId: { 
                 type: mongoose.Schema.Types.ObjectId, 
                 ref: 'User' },
-            review: String,
-            createdAt: Date
+            score: String,
         }
     ],
     // keyword: {type: String},
-    category: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Category', 
-        required: true  
-    },
+    // category: { 
+    //     type: mongoose.Schema.Types.ObjectId, 
+    //     ref: 'Category', 
+    //     required: true  
+    // },
     // createdAt: { type: Date, default: Date.now },
-    createdBy: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Admin' 
-    },
-    // updatedAt: Date,
-    updatedBy: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Admin' 
-    }
+    // createdBy: { 
+    //     type: mongoose.Schema.Types.ObjectId, 
+    //     ref: 'Admin' 
+    // },
+    // // updatedAt: Date,
+    // updatedBy: { 
+    //     type: mongoose.Schema.Types.ObjectId, 
+    //     ref: 'Admin' 
+    // }
 });
 
 module.exports = mongoose.model('Product', productSchema);
