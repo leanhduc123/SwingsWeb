@@ -11,14 +11,14 @@ router.post('/add-product', is_auth, (req, res, next) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
-        slug: slug,
+        //slug: slug,
         price: req.body.price,
         stock: req.body.stock,
         description: req.body.description,
-        productPic: req.body.productPic,
+        img: req.body.img,
         //keyword: req.body.keyword,
-        category: req.body.category,
-        createdBy: req.body.createdBy
+        // category: req.body.category,
+        // createdBy: req.body.createdBy
     });
     product.save()
     .then(product => {
@@ -36,7 +36,7 @@ router.post('/add-product', is_auth, (req, res, next) => {
 
 router.get('/', (req, res, next) => {
     Product.find({})
-    .select('_id name price productPic slug')
+    .select('_id name price img slug')
     .exec()
     .then(products => {
         res.status(200).json({
@@ -69,7 +69,7 @@ router.get('/:categorySlug', (req, res, next) => {
                 .then(categories => {
                     const categoriesAr = categories.map(category => category._id);
                     Product.find({ "category": { $in: categoriesAr } })
-                    .select('_id name price productPic category slug')
+                    .select('_id name price img category slug')
                     .sort(filter)
                     .exec()
                     .then(products => {
@@ -87,7 +87,7 @@ router.get('/:categorySlug', (req, res, next) => {
                 })
             }else{
                 Product.find({category: category._id})
-                .select('_id name price productPic category slug')
+                .select('_id name price img category slug')
                 .sort(filter)
                 .exec()
                 .then(products => {
@@ -103,7 +103,7 @@ router.get('/:categorySlug', (req, res, next) => {
             }
         }else{
             return res.status(404).json({
-                message: 'Not Found'
+                message: 'Không tìm thấy'
             })
         }
     })
@@ -125,7 +125,7 @@ router.get('/:categorySlug/:productSlug', (req, res, next) => {
             });
         }else{
             return res.status(404).json({
-                message: 'Not Found'
+                message: 'Không tìm thấy'
             })
         }
     })

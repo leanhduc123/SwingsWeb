@@ -7,7 +7,6 @@ const jwt = require('jsonwebtoken');
 const Admin = require('../models/admin');
 
 router.get('/', (req, res, next) => {
-
     Admin.find({})
     .exec()
     .then(doc => {
@@ -15,12 +14,11 @@ router.get('/', (req, res, next) => {
             message: doc
         });
     })
-    .catch(er => {
+    .catch(err => {
         res.status(500).json({
-            error: er
+            error: err
         })
     });
-
 });
 router.post('/register', (req, res, next) => {
     Admin.find({email: req.body.email})
@@ -42,7 +40,7 @@ router.post('/register', (req, res, next) => {
                         name: req.body.name,
                         email: req.body.email,
                         password: hash,
-                        createdAt: new Date().toISOString()
+                        //createdAt: new Date().toISOString()
                     });
                 
                     admin.save()

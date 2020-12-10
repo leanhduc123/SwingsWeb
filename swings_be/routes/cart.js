@@ -3,15 +3,11 @@ const router = express.Router();
 const mongoose = require('mongoose')
 const CartItem = require('../models/cart');
 
-
 router.post('/add-cart', (req, res, next) => {
-
     CartItem.findOne({user: req.body.user})
     .exec()
     .then(cartItem => {
-
         if(cartItem){
-
             const item = cartItem.cart.find(item => item.product == req.body.product);
             let where, action, set;
             if(item){
@@ -45,9 +41,6 @@ router.post('/add-cart', (req, res, next) => {
                     message: error
                 });
             });
-
-            
-
         }else{
             const newCartItem = new CartItem({
                 _id: new mongoose.Types.ObjectId(),
@@ -62,7 +55,6 @@ router.post('/add-cart', (req, res, next) => {
                     }
                 ]
             });
-
             newCartItem
             .save()
             .then(newCart => {
@@ -75,9 +67,7 @@ router.post('/add-cart', (req, res, next) => {
                     error : error
                 });
             });
-
         }
-
     })
     .catch(error => {
         res.status(500).json({
@@ -88,12 +78,10 @@ router.post('/add-cart', (req, res, next) => {
 });
 
 router.post('/user/:userId', (req, res, next) => {
-
     const userId = req.params.userId;
-
     CartItem.find({user: userId})
     .select('_id user cart')
-    .populate('cart.product', 'name productPic')
+    .populate('cart.product', 'name img')
     .exec()
     .then(cartItems => {
         res.status(200).json({
@@ -102,31 +90,28 @@ router.post('/user/:userId', (req, res, next) => {
     })
 });
 
-router.put('/update/quantity', (req, res, next) => {
-
-    const userId = req.body.userId;
-    const productId = req.body.productId;
-    const quantity = req.body.quantity;
-    const total = req.body.total;
-
-    CartItem.update({"user": userId, "cart.product": productId}, {
-        $set : {
-            "cart.$.quantity": quantity,
-            "cart.$.total": total
-        }
-    })
-    .exec()
-    .then(cartItem => {
-        res.status(201).json({
-            message: cartItem
-        });
-    })
-    .catch(error => {
-        res.status(500).json({
-            error: error
-        });
-    });
-
-});
+// router.put('/update/quantity', (req, res, next) => {
+//     const userId = req.body.userId;
+//     const productId = req.body.productId;
+//     const quantity = req.body.quantity;
+//     const total = req.body.total;
+//     CartItem.update({"user": userId, "cart.product": productId}, {
+//         $set : {
+//             "cart.$.quantity": quantity,
+//             "cart.$.total": total
+//         }
+//     })
+//     .exec()
+//     .then(cartItem => {
+//         res.status(201).json({
+//             message: cartItem
+//         });
+//     })
+//     .catch(error => {
+//         res.status(500).json({
+//             error: error
+//         });
+//     });
+// });
 
 module.exports = router;

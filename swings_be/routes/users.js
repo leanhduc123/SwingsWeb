@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const is_auth  = require('../middleware/auth-token');
 
 const User = require('../models/user');
-const UserAddress = require('../models/user_Address');
+//const UserAddress = require('../models/user_Address');
 
 router.post('/register', (req, res, next) => {
     User.findOne({email: req.body.email})
@@ -27,21 +27,23 @@ router.post('/register', (req, res, next) => {
                 }else{
                     const user = new User({
                         _id: new mongoose.Types.ObjectId(),
+                        username : req.body.username,
                         name: req.body.name,
                         email: req.body.email,
                         password: hash,
-                        createdAt: new Date().toISOString()
+                        address: req.body.address,
+                        phone: req.body.phone,
+                        //createdAt: new Date().toISOString()
                     });
-
                     user.save()
                     .then(doc => {
                         res.status(201).json({
                             message: 'Tạo tài khoản thành công'
                         });
                     })
-                    .catch(er => {
+                    .catch(err => {
                         res.status(500).json({
-                            error: er
+                            error: err
                         });
                     });
                 } 
@@ -52,11 +54,10 @@ router.post('/register', (req, res, next) => {
 
 router.post('/login', (req, res, next) => {
     User.findOne({email: req.body.email})
-    .select('_id name email password')
+    .select('_id username email password')
     .exec()
     .then(user => {
         if(user){
-
             bcrypt.compare(req.body.password, user.password, (err, result) => {
                 if(err){
                     return res.status(500).json({
@@ -79,13 +80,14 @@ router.post('/login', (req, res, next) => {
                                     message: {
                                         user: {
                                             userId: user._id,
-                                            name: user.name,
+                                            username: user.username,
                                             email: user.email
                                         },
                                         token: token
                                     }
                                 })
                             }
+                            
                         })
                     }else{
                         res.status(500).json({
@@ -110,11 +112,11 @@ router.post('/login', (req, res, next) => {
 
 });
 router.post('/address', is_auth, (req, res, next) => {
-    UserAddress.findOne({"user": req.body.userId})
+    User.findOne({"user": req.body.userId})
     .exec()
     .then(user => {
         if(user){
-            UserAddress.findOneAndUpdate({"user": req.body.userId}, {
+            User.findOneAndUpdate({"user": req.body.userId}, {
                 $push: {
                     "address": req.body.address
                 }
@@ -127,30 +129,31 @@ router.post('/address', is_auth, (req, res, next) => {
                 });
             });
 
-        }else{
-            const userAddress = new UserAddress({
-                _id: new mongoose.Types.ObjectId(),
-                user: req.body.userId,
-                address: req.body.address
-            });
-            userAddress.save()
-            .then(doc => {
-                res.status(201).json({
-                    message: doc
-                });
-            })
-            .catch(error => {
-                res.status(500).json({
-                    error: error
-                });
-            })
         }
+    //     else{
+    //         const user = new User({
+    //             _id: new mongoose.Types.ObjectId(),
+    //             user: req.body.userId,
+    //             address: req.body.address
+    //         });
+    //         user.save()
+    //         .then(doc => {
+    //             res.status(201).json({
+    //                 message: doc
+    //             });
+    //         })
+    //         .catch(error => {
+    //             res.status(500).json({
+    //                 error: error
+    //             });
+    //         })
+    //     }
     });
 
 });
 router.get('/get-address/:userId', is_auth, (req, res, next) => {
-    UserAddress.findOne({"user": req.params.userId})
-    .select('_id user address')
+    User.findOne({"user": req.params.userId})
+    .select('_id username address')
     .exec()
     .then(user => {
         res.status(200).json({

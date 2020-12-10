@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+//const 
 const Category = require('../models/category');
 
 categoryTree = (parentId = "", docs) => {
@@ -10,7 +11,7 @@ categoryTree = (parentId = "", docs) => {
         categories.push({
             _id: cat._id,
             name: cat.name,
-            slug: cat.slug,
+            //slug: cat.slug,
             children: categoryTree(cat._id, docs)
         })
     }
@@ -48,9 +49,9 @@ router.post('/', (req, res, next) => {
             message: doc
         });
     })
-    .catch(er => {
+    .catch(err => {
         res.status(500).json({
-            error: er
+            error: err
         })
     });
 
