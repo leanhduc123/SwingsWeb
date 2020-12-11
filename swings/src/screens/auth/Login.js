@@ -7,8 +7,7 @@ import "../../css/login.css"
 export const Login = () => {
     const initialValues_ = {
       username: "",
-      password: "",
-      confirmPassword: "",
+      password: ""
     };
   
     const validationSchema_ = Yup.object().shape({
@@ -18,9 +17,6 @@ export const Login = () => {
       password: Yup.string()
         .min(6, "Password's length must be greater than 6!")
         .required("Password is required!"),
-      confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password"), ""], "Confirm password not matched")
-        .required("Confirm password is required!"),
     });
     const onSubmit_ = (value) => {
       console.log(value);
@@ -45,13 +41,6 @@ export const Login = () => {
                 <label>Password</label>
                 <Field className="field" type="password" name="password" />
                 <ErrorMessage className="error" name="password" component="div" />
-                <label>Confirm Password</label>
-                <Field className="field" type="password" name="confirmPassword" />
-                <ErrorMessage
-                  className="error"
-                  name="confirmPassword"
-                  component="div"
-                />
   
                 <div className = "button-wrapper">
                   <button

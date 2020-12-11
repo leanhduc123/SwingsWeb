@@ -24,6 +24,24 @@
     height: 231px;
 }
 
+.item .product-sale{
+    top: 10px;
+    left: 38px;
+    color: #f94c43;
+    position: absolute;
+    font-size: 12px;
+    line-height: 1;
+    padding: 5px 10px;
+    font-weight: bold;
+    z-index: 9;
+    background: #fff;
+    border: 1px solid #ededed;
+}
+
+.item .no{
+    display: none;
+}
+
 .img1{
     position: absolute;
     top: 0;
@@ -43,7 +61,6 @@
 
 .namePrice .price{
     font-size: 13px;
-    color: rgb(121, 116, 116);
     position: absolute;
     bottom: 17px;
 }
@@ -52,6 +69,20 @@
     visibility: hidden;
     opacity: 0;
     transition:visibility 0.3s linear,opacity 0.3s linear;
+}
+
+.namePrice .price .real{
+    color: rgb(121, 116, 116);
+}
+
+.namePrice .price .discount{
+    color:red;
+    margin-right: 9px;
+}
+
+.namePrice .price .no{
+    display: none;
+    margin: 0;
 }
 
 

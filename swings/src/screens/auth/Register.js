@@ -27,8 +27,7 @@ export const Register = () => {
     const onSubmit_ = (values) => {
       axios
         .post("http://localhost:5000/register", {
-          username: "12312",
-          email: values.username,
+          username: values.username,
           password: values.password,
         })
         .then(() => {

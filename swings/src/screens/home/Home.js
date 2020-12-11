@@ -19,13 +19,21 @@ import { Transactions } from '../user/Transactions'
 const product = [{
     name: "Áo khoác",
     productId: "123123123",
-    price: "650.000đ",
+    price: 650000,
     img: [
         "http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg",
         "http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg"
     ],
     size: ["M", "L", "XL", "XLL"],
-    link: "/"
+    discount: 50,
+    description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
+    rating: [
+        {username: "duc", score: 3},
+        {username: "linh", score: 2},
+        {username: "hoang", score: 1},
+        {username: "kien", score: 5},
+        {username: "thai", score: 3},
+    ]
 }]
 
 const home = () => {
@@ -98,8 +106,7 @@ export const Home = () => {
         { type: "ÁO KHOÁC BÒ", link: "/collections/ao-khoac-bo" },
         { type: "ÁO NỈ", link: "/collections/ao-ni" },
         { type: "ÁO HOODIE", link: "/collections/ao-hoodie" },
-        { type: "ÁO KHOÁC DA", link: "/collections/ao-khoac-da" },
-        { type: "BÌNH LUẬN", link: "/binh-luan" },
+        { type: "ÁO KHOÁC DA", link: "/collections/ao-khoac-da" }
         ];
     const list = [{
         type: "SẢN PHẨM",
@@ -153,7 +160,7 @@ export const Home = () => {
         link: "/collections/sale-50"
     }, {
         type: "BÌNH LUẬN",
-        link: "/binh-luan"
+        link: "/comment"
     }]
 
     return (
@@ -162,7 +169,10 @@ export const Home = () => {
                 <Container>
                     <Row className="align-items-center">
                         <Col lg='3' className="brand">
-                            <a href="/">SWINGS</a>
+                            <a href="/">
+                                <img src="https://image.freepik.com/free-vector/raven-esport-gaming-mascot-logo-template_20684-157.jpg" alt="swings-logo"/>
+                                <span>SWINGS</span>
+                            </a>
                         </Col>
                         <Col lg='7' className="searchBar">
                             <form className="search-box" action="/search">
@@ -206,6 +216,7 @@ export const Home = () => {
                 }
                 <Route path="/collections/:productId" name="product" component={ProductInfo}/>
                 <Route path="/login" component={Login} />
+                <Route path="/comment" component={Comment} />
                 <Route path="/register" exact component={Register} />
                 <Route path="/account/orders/:id" component={Transactions}/>
                 <Route path="/account" component={Account} />

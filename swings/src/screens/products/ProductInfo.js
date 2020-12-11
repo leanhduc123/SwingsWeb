@@ -4,6 +4,8 @@ import "../../css/productInfo.css"
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import ReactStars from "react-rating-stars-component";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 
 const sizeList = ['s', 'm', 'l', 'xl', 'xll'];
 const hdList = [
@@ -22,12 +24,41 @@ const hdList = [
     { type: "QUẦN JOGGER - QUẦN DÀI", img: "//file.hstatic.net/200000201725/file/quan_jogger_06eae128a000431496275e8c6ce709ea_master.jpg" },
 ]
 
-export const ProductInfo = ({match}) => {
-    console.log(match.params.productId)
+const product = {
+    name: "Áo khoác",
+    productId: "12312",
+    price: 650000,
+    img: [
+        "http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg",
+        "http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg"
+    ],
+    size: ["M", "L", "XL", "XLL"],
+    discount: 0,
+    description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
+    rating: [
+        { username: "duc", score: 3 },
+        { username: "linh", score: 2 },
+        { username: "hoang", score: 1 },
+        { username: "kien", score: 5 },
+        { username: "thai", score: 3 },
+    ]
+}
+
+const countStar = (rating) => {
+    var count = 0
+    var x
+    for (x in rating) {
+        count += rating[x].score
+    }
+    return parseInt(count / rating.length);
+}
+
+export const ProductInfo = ({ match }) => {
+    // console.log(match.params.productId)
     const [quantity, setQuantity] = useState(1);
-    const [size, setSize] = useState("s");
+    const [size, setSize] = useState(product.size[0].toLowerCase());
     const [img, setImg] = useState(hdList[0].img)
-    const [star, setStar] = useState(4);
+    const [star, setStar] = useState(countStar(product.rating));
 
     const [show, setShow] = useState(false);
     const [alert, setAlert] = useState(false);
@@ -39,8 +70,37 @@ export const ProductInfo = ({match}) => {
         setSize(target.innerText.toLowerCase())
     }
 
+
     const update = () => {
-        console.log(quantity + " " + size)
+        var cartList = localStorage.getObj("cart")
+        var total = parseInt(localStorage.getItem("total"))
+        
+        if (cartList === null) {
+            cartList = []
+        } 
+        if (!total) {
+            total = 0
+        }
+        var index = cartList.findIndex((item) => {
+            return item.id === product.productId && item.size === size
+        })
+        if (index === -1) {
+            cartList.push({
+                name: product.name,
+                id: product.productId,
+                price: product.price * (100 - product.discount) / 100,
+                size: size,
+                quantity: quantity
+            })
+            localStorage.setObj("cart",cartList)
+        } else {
+            cartList[index].quantity += quantity
+            localStorage.setObj("cart",cartList)
+        }
+        total += quantity
+        localStorage.setItem("total", total)
+        // console.log(cartList)
+        // console.log(total)
         setAlert(true)
     }
 
@@ -55,12 +115,12 @@ export const ProductInfo = ({match}) => {
 
     return (
         <div>
-            <Modal show={alert} onHide={() => {setAlert(false)}}>
+            <Modal show={alert} onHide={() => { setAlert(false) }}>
                 <Modal.Header closeButton>
                     <span>Sản phẩm đã được thêm vào giỏ</span>
                 </Modal.Header>
             </Modal>
-            <Modal className="modal-box" show={show} onHide={() => {setShow(false)}}>
+            <Modal className="modal-box" show={show} onHide={() => { setShow(false) }}>
                 <Modal.Header closeButton>
                     <h2>HƯỚNG DẪN CHỌN SIZE</h2>
                 </Modal.Header>
@@ -92,18 +152,25 @@ export const ProductInfo = ({match}) => {
                 </Col>
                 <Col md="5">
                     <Row className="pro_row">
-                        <h1>Name</h1>
-                        <span id="id_prod">sdcsdckka</span>
+                        <h1>{product.name}</h1>
+                        <span className="star">{countStar(product.rating)}<FontAwesomeIcon className="star-icon" icon={faStar} /></span>
+                        <span id="id_prod">{product.productId}</span>
                     </Row>
                     <Row className="pro_row price">
-                        <span id="price">650.000d</span>
+                        <span className={product.discount === 0 ? "no" : "discount"}>
+                            {"-" + product.discount + "%"}
+                        </span>
+                        <span id="price">{(product.price * (100 - product.discount) / 100).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}</span>
+                        <del className={product.discount === 0 ? "no" : "bonus"}>
+                            {product.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}
+                        </del>
                     </Row>
                     <Row className="pro_row size">
                         {
-                            sizeList.map((item, index) =>
+                            product.size.map((item, index) =>
                                 <div className={"swatch-element " + item.toLowerCase()}>
                                     <input id={"swatch-0-" + item.toLowerCase()} className="variant-0" type="radio" name="option1" onClick={(e) => { changeSize(e) }}></input>
-                                    <label className={index === 1 ? "sd" : ""} htmlFor={"swatch-0-" + item.toLowerCase()}>
+                                    <label className={index === 0 ? "sd" : ""} htmlFor={"swatch-0-" + item.toLowerCase()}>
                                         <span>{item.toUpperCase()}</span>
                                     </label>
                                 </div>)
@@ -119,7 +186,7 @@ export const ProductInfo = ({match}) => {
                         />
                     </Row>
                     <Row className="pro_row">
-                        <div className="hd" onClick={() => {setShow(true)}}>
+                        <div className="hd" onClick={() => { setShow(true) }}>
                             <span>Hướng dẫn chọn size</span>
                         </div>
                     </Row>
