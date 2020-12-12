@@ -7,13 +7,13 @@ const bodyParser = require('body-parser')
 const http = require('http');
 const port = 3000
 
-const is_auth = require('./middleware/auth-token');
+//const is_auth = require('./middleware/auth-token');
 const adminRoutes = require('./routes/admins');
-const categoryRoutes = require('./routes/categories');
+// const categoryRoutes = require('./routes/categories');
 const userRoutes = require('./routes/users');
-const productRoutes = require('./routes/products');
-const cartRoutes = require('./routes/cart');
-const orderRoutes = require('./routes/orders');
+// const productRoutes = require('./routes/products');
+// const cartRoutes = require('./routes/cart');
+// const orderRoutes = require('./routes/orders');
 
 mongoose.connect("mongodb://localhost/backend", {
   useUnifiedTopology: true,
@@ -30,11 +30,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use('/admin', adminRoutes);
-app.use('/category', categoryRoutes);
+//app.use('/category', categoryRoutes);
 app.use('/', userRoutes); 
-app.use('/products', productRoutes);
-app.use('/cart', is_auth, cartRoutes);
-app.use('/order', is_auth, orderRoutes);
+//app.use('/products', productRoutes);
+//app.use('/cart', is_auth, cartRoutes);
+//app.use('/order', is_auth, orderRoutes);
 
 app.use((req, res, next) => {
     res.status(404).json({
