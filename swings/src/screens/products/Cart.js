@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Modal, Form, Button } from 'react-bootstrap'
 import "../../css/cart.css"
 import { Link } from "react-router-dom"
@@ -6,36 +6,88 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStore } from '@fortawesome/free-solid-svg-icons';
 
 const Item = (props) => {
-    const [quantity, setQuantity] = useState(1);
-    const change = () => {
-        setQuantity(quantity + 1)
-        console.log(quantity)
+    const [name, setName] = useState(props.name);
+    const [id, setId] = useState(props.id)
+    const [price, setPrice] = useState(props.price)
+
+    const [quantity, setQuantity] = useState(props.quantity);
+    useEffect(() => {
+        setQuantity(props.quantity)
+    })
+
+    const updateCartItem = (qty) => {
+        var list = localStorage.getObj("cart")
+        var index = list.findIndex((item) => {
+            return item.id === props.id && item.size === props.size
+        })
+        list[index].quantity += qty
+        props.setProducts(list)
+        localStorage.setObj("cart", list)
+        return list[index].quantity
+    }
+
+    const updateTotal = (qty) => {
+        var x = parseInt(localStorage.getItem('total'))
+        localStorage.setItem('total', x + qty)
+        return x + qty
+    }
+
+    const add = () => {
+        props.setTotal(props.total + props.price)
+        setQuantity(updateCartItem(1))
+        props.setTotalQty(updateTotal(1))
+    }
+
+    const del = () => {
+        if (quantity > 1) {
+            props.setTotal(props.total - props.price)
+            setQuantity(updateCartItem(-1))
+            props.setTotalQty(updateTotal(-1))
+        }
+    }
+
+    const onDelete = () => {
+        var list = localStorage.getObj("cart")
+        var index = list.findIndex((item) => {
+            return item.id === props.id && item.size === props.size
+        })
+        list.splice(index, 1)
+        localStorage.setObj("cart", list)
+        props.setTotalQty(updateTotal((-1) * quantity))
+        props.setProducts(list)
+        props.setTotal(props.total - props.price * quantity)
     }
     return (
         <div className="cart-item">
             <div className="product_img">
-                <Link to="#">
+                <Link to={"/collections/" + props.id}>
                     <img src="http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg" alt="product_img" />
                 </Link>
             </div>
             <div className="content-item">
                 <h3>
-                    <Link to="#" className="name">
-                        Ao da
+                    <Link to={"/collections/" + props.id} className="name">
+                        {props.name}
                     </Link>
                 </h3>
-                <span className="price-item">125.000d</span>
-                <span className="size">Size: X</span>
+                <span className="price-item">{props.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}</span>
+                <span className="size">Size: {props.size.toUpperCase()}</span>
                 <div className="quantity_selector">
-                    <input className="qty-btn" type="button" value="-" onClick={() => { setQuantity(quantity > 1 ? quantity - 1 : quantity) }} />
+                    <input className="qty-btn"
+                        type="button"
+                        value="-"
+                        onClick={() => { del() }} />
                     <input type="text" id="quantity" name="quantity" value={quantity} min="1" />
-                    <input className="qty-btn" type="button" value="+" onClick={() => { setQuantity(quantity + 1) }} />
+                    <input className="qty-btn"
+                        type="button"
+                        value="+"
+                        onClick={() => { add() }} />
                 </div>
             </div>
             <p className="price-items">
-                <span>250.000d</span>
+                <span>{(props.price * quantity).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}</span>
             </p>
-            <Link to="/cart" onClick={change} className="del">
+            <Link to="/cart" onClick={onDelete} className="del">
                 <img src="//theme.hstatic.net/200000201725/1000627199/14/ic_close.png?v=372" />
             </Link>
         </div>
@@ -43,7 +95,22 @@ const Item = (props) => {
 }
 
 export const Cart = () => {
+    const calculate = (products) => {
+        var total = 0
+        var item
+        if (products.length > 0) {
+            for (item in products) {
+                total += products[item].price * products[item].quantity
+            }
+        }
+        return total
+    }
     const [show, setShow] = useState(false);
+    const [products, setProducts] = useState(localStorage.getObj("cart") === null ? [] : localStorage.getObj("cart"))
+    const [total, setTotal] = useState(calculate(products))
+    const [totalQty, setTotalQty] = useState(parseInt(localStorage.getItem("total")))
+
+
     return (
         <Container>
             <Modal className="modal_box" show={show} onHide={() => { setShow(false) }}>
@@ -81,15 +148,16 @@ export const Cart = () => {
             <Row className="wrap-heading">
                 <div className="heading-page">
                     <h3>Giỏ hàng của bạn</h3>
-                    <p>Bạn có 13 sản phẩm trong giỏ hàng</p>
+                    <p>Bạn có {totalQty ? totalQty : 0} sản phẩm trong giỏ hàng</p>
                 </div>
             </Row>
             <Row className="wrap-cart">
                 <Col md={8} className="table-cart">
-                    <Item />
-                    <Item />
-                    <Item />
-                    <Item />
+                    {
+                        products.map(item => {
+                            return (<Item {...item} setTotal={setTotal} total={total} setTotalQty={setTotalQty} setProducts={setProducts} />)
+                        })
+                    }
                 </Col>
                 <Col md={4}>
                     <div className="sidebox-order">
@@ -98,13 +166,13 @@ export const Cart = () => {
                                 <h3>Thông tin đơn hàng</h3>
                             </div>
                             <div className="sidebox-total">
-                                <p>Tổng tiền:<span>150.000d</span></p>
+                                <p>Tổng tiền:<span>{total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}</span></p>
                             </div>
                             <div className="sidebox-text">
                                 <p>Phí vận chuyển sẽ được thông báo sau.</p>
                             </div>
                             <div className="sidebox-action">
-                                <button className="submit-items" onClick={() => { setShow(true) }}>Thanh toán</button>
+                                <button className="submit-items" onClick={() => { setShow(true) }} disabled={totalQty === 0}>Thanh toán</button>
                                 <p>
                                     <Link to="/" className="returnBtn">
                                         <FontAwesomeIcon icon={faStore} className="icon" />

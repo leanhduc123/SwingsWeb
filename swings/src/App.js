@@ -17,7 +17,8 @@ function App() {
   }
   Storage.prototype.getObj = function(key) {
     return JSON.parse(this.getItem(key))
-  }},[])
+  }
+  },[])
 
   return (
     <div>

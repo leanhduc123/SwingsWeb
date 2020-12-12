@@ -33,7 +33,7 @@ const product = {
         "http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg"
     ],
     size: ["M", "L", "XL", "XLL"],
-    discount: 0,
+    discount: 50,
     description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
     rating: [
         { username: "duc", score: 3 },
@@ -55,6 +55,7 @@ const countStar = (rating) => {
 
 export const ProductInfo = ({ match }) => {
     // console.log(match.params.productId)
+    product.productId = match.params.productId
     const [quantity, setQuantity] = useState(1);
     const [size, setSize] = useState(product.size[0].toLowerCase());
     const [img, setImg] = useState(hdList[0].img)
@@ -90,6 +91,7 @@ export const ProductInfo = ({ match }) => {
                 id: product.productId,
                 price: product.price * (100 - product.discount) / 100,
                 size: size,
+                img: product.img[0],
                 quantity: quantity
             })
             localStorage.setObj("cart",cartList)

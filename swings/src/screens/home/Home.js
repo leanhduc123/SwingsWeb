@@ -15,6 +15,8 @@ import { DropDownNav } from './DropDownNav'
 import { Comment } from '../Comments/Comment'
 import { Account } from '../user/Account'
 import { Transactions } from '../user/Transactions'
+import { Custom } from '../user/Custom'
+import { Search } from '../products/Search'
 
 const product = [{
     name: "Áo khoác",
@@ -26,6 +28,24 @@ const product = [{
     ],
     size: ["M", "L", "XL", "XLL"],
     discount: 50,
+    description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
+    rating: [
+        {username: "duc", score: 3},
+        {username: "linh", score: 2},
+        {username: "hoang", score: 1},
+        {username: "kien", score: 5},
+        {username: "thai", score: 3},
+    ]
+}, {
+    name: "Áo khoác",
+    productId: "123123123",
+    price: 650000,
+    img: [
+        "http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg",
+        "http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg"
+    ],
+    size: ["M", "L", "XL", "XLL"],
+    discount: 0,
     description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
     rating: [
         {username: "duc", score: 3},
@@ -49,14 +69,14 @@ const home = () => {
 
             <Container>
                 <Row>
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
+                    <Card product={product[1]} />
+                    <Card product={product[1]} />
+                    <Card product={product[1]} />
+                    <Card product={product[1]} />
+                    <Card product={product[1]} />
+                    <Card product={product[1]} />
+                    <Card product={product[1]} />
+                    <Card product={product[1]} />
                 </Row>
             </Container>
 
@@ -66,7 +86,7 @@ const home = () => {
 
             <Container>
                 <Row>
-                    <Card product={product[0]} />
+                <Card product={product[0]} />
                     <Card product={product[0]} />
                     <Card product={product[0]} />
                     <Card product={product[0]} />
@@ -215,11 +235,13 @@ export const Home = () => {
                     })
                 }
                 <Route path="/collections/:productId" name="product" component={ProductInfo}/>
+                <Route path="/search" component={Search} />
                 <Route path="/login" component={Login} />
                 <Route path="/comment" component={Comment} />
                 <Route path="/register" exact component={Register} />
                 <Route path="/account/orders/:id" component={Transactions}/>
                 <Route path="/account" component={Account} />
+                <Route path="/custom" component={Custom} />
                 <Route path='/' component={home} />
             </Switch>
 

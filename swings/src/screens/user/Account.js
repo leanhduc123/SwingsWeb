@@ -37,7 +37,7 @@ export const Account = () => {
                             <p>email</p>
                             <p>số điện thoại</p>
                             <p>địa chỉ</p>
-                            <Link to="account/custom" className="custom_account">
+                            <Link to="/custom" className="custom_account">
                                 Chỉnh sửa thông tin
                             </Link>
                         </div>
