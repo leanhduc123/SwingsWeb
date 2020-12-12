@@ -9,14 +9,14 @@ const User = require('../models/user');
 const UserAddress = require('../models/userAddress');
 
 router.post('/register', (req, res, next) => {
-    User.findOne({username: req.body.username})
-    .exec()
-    .then(user => {
-        if(user){
-            return res.status(500).json({
-                message: 'Username đã tồn tại'
-            })
-        }else{
+    // User.findOne({username: req.body.username})
+    // .exec()
+    // .then(user => {
+    //     if(user){
+    //         return res.status(500).json({
+    //             message: 'Username đã tồn tại'
+    //         })
+    //     }else{
             bcrypt.hash(req.body.password, 10, (err, hash) => {
                 if(err){
                     return res.status(500).json({
@@ -45,9 +45,9 @@ router.post('/register', (req, res, next) => {
                     });
                 }
             });
-        }
-    });
-});
+        })
+//     });
+// });
 
 router.post('/login', (req, res, next) => {
     User.findOne({username: req.body.username})
