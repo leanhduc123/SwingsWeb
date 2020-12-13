@@ -18,6 +18,9 @@ const productSchema = mongoose.Schema({
             required: true
         }
     }],
+    discount: {
+        type: String,
+    },
     rating: [
         {
             _id: mongoose.Schema.Types.ObjectId,

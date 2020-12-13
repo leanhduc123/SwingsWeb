@@ -5,6 +5,7 @@ const Product = require('../models/product');
 //const Category = require('../models/category');
 const authenticate = require('../middleware/authenticate');
 const { update } = require('../models/product');
+const expressAsyncHandler = require('express-async-handler');
 
 
 router.post('/addProduct', authenticate, (req, res, next) => {
@@ -18,6 +19,7 @@ router.post('/addProduct', authenticate, (req, res, next) => {
                 description: req.body.description,
                 image: req.body.image,
                 category: req.body.category,
+                discount: req.body.discount,
                 updatedAt : Date.now(),
             },{
                 new: true
@@ -29,11 +31,12 @@ router.post('/addProduct', authenticate, (req, res, next) => {
             })
         } else {
             const product = new Product({
-                _id: new mongoose.Types.ObjectId(),
+                _id: new mongoose.Types.ObjectId(), 
                 name: req.body.name,
                 price: req.body.price,
                 description: req.body.description,
                 image: req.body.image,
+                discount: req.body.discount,
                 category: req.body.category
                 //createdBy: req.body.createdBy
             });
@@ -52,9 +55,32 @@ router.post('/addProduct', authenticate, (req, res, next) => {
     })
 });
 
+router.put('/:id', (req, res, next) =>{
+    const productId = req.params.id;
+    const product = Product.findById(productId);
+    if (product) {
+      product.name = req.body.name;
+      product.price = req.body.price;
+      product.image = req.body.image;
+      product.category = req.body.category;
+      product.description = req.body.description;
+      product.discount = req.body.discount
+      const updatedProduct = product.save();
+      res.status(201).json({ 
+          message: 'Product Updated', 
+          product: updatedProduct 
+        });
+    } else {
+        res.status(404).json({ 
+            message: 'Product Not Found' 
+        });
+    }
+
+})
+
 router.get('/', (req, res, next) => {
     Product.find({})
-    .select('_id name price image ')
+    //.select('_id name price image ')
     .exec()
     .then(products => {
         res.status(200).json({
@@ -66,27 +92,26 @@ router.get('/', (req, res, next) => {
             error: error
         });
     })
-
 });
 
-router.get('/category', (req, res, next) => {
-    //const category = req.params.category
-    Product.find().distinct('category')
-    .then(products =>{
-        res.status(200).json({
-            message: products
-        })
-    })
-    .catch(error => {
-        res.status(500).json({
-            error: error
-        });
-    })
-})
+// router.get('/category', (req, res, next) => {
+//     //const category = req.params.category
+//     Product.find().distinct('category')
+//     .then(products =>{
+//         res.status(200).json({
+//             message: products
+//         })
+//     })
+//     .catch(error => {
+//         res.status(500).json({
+//             error: error
+//         });
+//     })
+// })
 
-router.get('/:_id', (req, res, next) =>{
-    const product = Product.findById(req.params._id)
-    .populate('rating',' rating.userId rating.score')
+router.get('/:id', (req, res, next) => {
+    const product = Product.findById({_id:req.params.id})
+    .exec()
     if (product) {
         res.status(200).json({
             message: product
@@ -97,11 +122,12 @@ router.get('/:_id', (req, res, next) =>{
         });
     }
 })
-router.get('/:_id', (req, res, next) =>{
-    const product = Product.findById(req.params._id)
-    .populate('rating',' rating.userId rating.score')
+router.get('/:delete', (req, res, next) =>{
+    const product = Product.findById({_id :req.params._id})
+    //.populate('rating',' rating.userId rating.score')
+    .exec
     if (product) {
-        const deleteProdct = product.remove()
+        const deleteProduct = product.remove()
         res.status(200).json({
             message: product,
             product: deleteProduct
@@ -113,96 +139,37 @@ router.get('/:_id', (req, res, next) =>{
     }
 })
 
-
-
-
-
-// router.get('/:categorySlug', (req, res, next) => {
-//     let filter = {};
-//     if(req.query.hasOwnProperty("filter")){
-//         filter['price'] = req.query.price
-//     }
-//     const slug = req.params.categorySlug;
-//     Category.findOne({slug: slug})
-//     .select('_id parent')
-//     .exec()
-//     .then(category => {
-//         if(category){
-//             if(category.parent === ""){
-//                 //its a parent category
-//                 //Now find Chidrens
-//                 Category.find({"parent": category._id})
-//                 .select('_id name')
-//                 .exec()
-//                 .then(categories => {
-//                     const categoriesAr = categories.map(category => category._id);
-                    
-//                     Product.find({ "category": { $in: categoriesAr } })
-//                     .select('_id name price productPic category slug')
-//                     .sort(filter)
-//                     .exec()
-//                     .then(products => {
-//                         res.status(200).json({
-//                             message: products
-//                         })
-//                     })
-//                     .catch(error => {
-//                         res.status(500).json({
-//                             error: error
-//                         })
-//                     })                    
-//                 })
-//                 .catch(error => {
-//                 })
-//             }else{
-//                 Product.find({category: category._id})
-//                 .select('_id name price image category slug')
-//                 .sort(filter)
-//                 .exec()
-//                 .then(products => {
-//                     res.status(200).json({
-//                         message: products
-//                     })
-//                 })
-//                 .catch(error => {
-//                     return res.status(404).json({
-//                         message: error
-//                     })
-//                 })
-//             }
-//         }else{
-//             return res.status(404).json({
-//                 message: 'Not Found'
-//             })
-//         }
-//     })
-//     .catch(er => {
-//         res.status(500).json({
-//             error: er
-//         });
-//     });
-// });
-
-// router.get('/:categorySlug/:productSlug', (req, res, next) => {
-//     const productSlug = req.params.productSlug; 
-//     Product.findOne({slug: productSlug})
-//     .exec()
-//     .then(product => {
-//         if(product){
-//             res.status(200).json({
-//                 message: product
-//             });
-//         }else{
-//             return res.status(404).json({
-//                 message: 'Not Found'
-//             })
-//         }
-//     })
-//     .catch(err => {
-//         res.status(500).json({
-//             error: err
-//         });
-//     });
-// });
+router.get('/category', (req, res, next) => {
+    const category = req.params.category;
+    Product.findOne({category: category})
+    .exec()
+    .then(category => {
+        if(category){
+            Product.find({ "category": { $in: categoriesAr } })
+            .select('_id name price image category ')
+            .exec()
+            .then(products => {
+                res.status(200).json({
+                    message: products
+                })
+            })
+            .catch(error => {
+                res.status(500).json({
+                    error: error
+                })
+            })                    
+        .catch(error => {})
+        }else{
+            return res.status(404).json({
+                message: 'Not Found'
+            })
+        }
+    })
+    .catch(er => {
+        res.status(500).json({
+            error: er
+        });
+    });
+});
 
 module.exports = router;

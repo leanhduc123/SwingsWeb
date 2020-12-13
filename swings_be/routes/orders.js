@@ -3,12 +3,12 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Order = require('../models/order');
 //const CartItem = require('../models/cartItem');
-const UserAddress = require('../models/profile');
-const order = require('../models/order');
+const Profile = require('../models/profile');
+const expressAsyncHandler = require('express-async-handler');
 
 router.post('/order', (req, res, next) => {
     const order = new Order({
-        _id: new mongoose.Types.ObjectId(),
+        id: new mongoose.Types.ObjectId(),
         user: req.body.user,
         order: req.body.order,
         address: req.body.address,
@@ -34,11 +34,11 @@ router.get('/getorders/:userId', (req, res, next) => {
     .populate('order.product', 'name image')
     .exec()
     .then(orders => {
-        UserAddress.findOne({"user": userId})
+        Profile.findOne({"user": userId})
         .exec()
-        .then(userAddress => {
+        .then(profile => {
             const orderWithAddress = orders.map(order => {
-                const address = userAddress.address.find(userAdd => order.address.equals(userAdd._id));
+                const address = profile.address.find(userAdd => order.address.equals(userAdd._id));
                 return {
                     _id: order._id,
                     order: order.order,
@@ -66,7 +66,18 @@ router.get('/getorders/:userId', (req, res, next) => {
     });
 
 });
-router.put('/update/quantity', (req, res, next) => {
+
+router.get('/:id',(req, res, next) => {
+      const order = Order.findById(req.params.id);
+      if (order) {
+        res.send(order);
+      } else {
+        res.status(404).send({ message: 'Order Not Found' });
+      }
+    }
+)
+
+router.put('/updateOder', (req, res, next) => {
     const userId = req.body.userId;
     const productId = req.body.productId;
     const quantity = req.body.quantity;

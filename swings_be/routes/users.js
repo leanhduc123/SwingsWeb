@@ -150,7 +150,7 @@ router.post('/profile', authenticate, (req, res, next) => {
 
 router.get('/profile/:id', authenticate, (req, res, next) => {
     const user = req.params.userId
-    Profile.findById({userId})
+    Profile.findOne({userId : user})
     .then(user => {
         res.status(200).json({
             message: user
