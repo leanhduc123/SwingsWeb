@@ -5,39 +5,31 @@ const productSchema = mongoose.Schema({
         type: String, 
         required: true 
     },
-    slug: { 
-        type: String, 
-        required: true, 
-        unique: true 
-    },
     price: { 
-        type: Number, 
-        required: true 
-    },
-    stock: { 
         type: Number, 
         required: true 
     },
     description: { 
         type: String 
     },
-    image: [
-        {
-            img: {
-                type: String,
-                required: true
-            }
+    image: [{
+        img: {
+            type: String,
+            required: true
         }
-    ],
+    }],
+    discount: {
+        type: String,
+    },
     rating: [
         {
             _id: mongoose.Schema.Types.ObjectId,
             userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-            rating: String,
+            score: String,
             createdAt: Date
         }
     ],
-    keyword: {type: String},
+    //keyword: {type: String},
     category: { 
         type: String, 
         required: true  
@@ -50,7 +42,8 @@ const productSchema = mongoose.Schema({
     //     type: mongoose.Schema.Types.ObjectId, 
     //     ref: 'Admin' 
     // },
-    updatedAt: Date,
+    updatedAt: Date 
+    
     // updatedBy: { 
     //     type: mongoose.Schema.Types.ObjectId, 
     //     ref: 'Admin'

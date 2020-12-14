@@ -3,35 +3,22 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Order = require('../models/order');
 //const CartItem = require('../models/cartItem');
-const UserAddress = require('../models/userAddress');
-const order = require('../models/order');
+const Profile = require('../models/profile');
+const expressAsyncHandler = require('express-async-handler');
 
 router.post('/order', (req, res, next) => {
     const order = new Order({
-        _id: new mongoose.Types.ObjectId(),
+        id: new mongoose.Types.ObjectId(),
         user: req.body.user,
         order: req.body.order,
         address: req.body.address,
-        // paymentType: req.body.paymentType,
-        // paymentStatus: req.body.paymentStatus
+        total: req.body.total
     });
     order.save()
     .then(order => {
         res.status(201).json({
             message: order
         });
-        // CartItem.remove({"user": req.body.user})
-        // .exec()
-        // .then(doc => {
-        //     res.status(201).json({
-        //         message: order
-        //     });
-        // })
-        // .catch(error => {
-        //     res.status(500).json({
-        //         error: error
-        //     });
-        // })  
     })
     .catch(error => {
         res.status(500).json({
@@ -47,11 +34,11 @@ router.get('/getorders/:userId', (req, res, next) => {
     .populate('order.product', 'name image')
     .exec()
     .then(orders => {
-        UserAddress.findOne({"user": userId})
+        Profile.findOne({"user": userId})
         .exec()
-        .then(userAddress => {
+        .then(profile => {
             const orderWithAddress = orders.map(order => {
-                const address = userAddress.address.find(userAdd => order.address.equals(userAdd._id));
+                const address = profile.address.find(userAdd => order.address.equals(userAdd._id));
                 return {
                     _id: order._id,
                     order: order.order,
@@ -79,7 +66,18 @@ router.get('/getorders/:userId', (req, res, next) => {
     });
 
 });
-router.put('/update/quantity', (req, res, next) => {
+
+router.get('/:id',(req, res, next) => {
+      const order = Order.findById(req.params.id);
+      if (order) {
+        res.send(order);
+      } else {
+        res.status(404).send({ message: 'Order Not Found' });
+      }
+    }
+)
+
+router.put('/updateOder', (req, res, next) => {
     const userId = req.body.userId;
     const productId = req.body.productId;
     const quantity = req.body.quantity;

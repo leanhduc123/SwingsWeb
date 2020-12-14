@@ -8,7 +8,7 @@ const http = require('http');
 const port = 5000;
 
 const adminRoutes = require('./routes/admins');
-const categoryRoutes = require('./routes/categories');
+//const categoryRoutes = require('./routes/categories');
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
 //const cartItemRoutes = require('./routes/cartItems');
@@ -16,7 +16,8 @@ const orderRoutes = require('./routes/orders');
 
 mongoose.connect('mongodb://localhost/backend', {
     useUnifiedTopology: true,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useCreateIndex: true
 });
 
 app.use(cors());
@@ -30,10 +31,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 app.use('/admin', adminRoutes);
-app.use('/category', categoryRoutes);
-app.use('', userRoutes); 
+app.use('/', userRoutes); 
 app.use('/products', productRoutes);
-//app.use('/cart', authenticate, cartItemRoutes);
 app.use('/order', authenticate, orderRoutes);
 
 app.use((req, res, next) => {
