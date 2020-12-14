@@ -9,6 +9,8 @@ const validationSchema_ = Yup.object().shape({
   username: Yup.string()
     .min(6, "Username's length must be greater than 6!")
     .required("Username is required!"),
+  email: Yup.string()
+    .required("Email is required!"),
   password: Yup.string()
     .min(6, "Password's length must be greater than 6!")
     .required("Password is required!"),
@@ -24,6 +26,7 @@ export const Register = () => {
   const [show, setShow] = useState(false);
   const initialValues_ = {
     username: "",
+    email: "",
     password: "",
     confirmPassword: "",
   };
@@ -33,7 +36,7 @@ export const Register = () => {
     axios
       .post("http://localhost:5000/register", {
         username: values.username,
-        email: "leeanhducc111@gmail.com",
+        email: values.email,
         password: values.password,
       })
       .then(() => {
@@ -43,12 +46,13 @@ export const Register = () => {
       .catch((err) => {
         setError(true);
         setSuccess(false);
-        console.log(err)
+        console.log(err.messages)
       })
       .finally(() => {
         setRegistering(false);
         setShow(true)
         var values = document.getElementsByClassName("field")
+        console.log(values)
       });
   };
   function onClick_Login() {
@@ -78,6 +82,9 @@ export const Register = () => {
               <label>Username</label>
               <Field className="field" type="text" name="username" />
               <ErrorMessage className="error" name="username" component="div" />
+              <label>Email</label>
+              <Field className="field" type="email" name="email" />
+              <ErrorMessage className="error" name="email" component="div" />
               <label>Password</label>
               <Field className="field" type="password" name="password" />
               <ErrorMessage className="error" name="password" component="div" />

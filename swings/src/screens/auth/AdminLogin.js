@@ -8,7 +8,6 @@ export const AdminLogin = () => {
   const initialValues_ = {
     username: "",
     password: "",
-    confirmPassword: "",
   };
 
   const validationSchema_ = Yup.object().shape({
@@ -18,16 +17,13 @@ export const AdminLogin = () => {
     password: Yup.string()
       .min(6, "Password's length must be greater than 6!")
       .required("Password is required!"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password"), ""], "Confirm password not matched")
-      .required("Confirm password is required!"),
   });
   const onSubmit_ = (value) => {
     console.log(value);
   };
-  function onClick_Login() {
-    console.log("Clicked to Login!");
-  }
+  // function onClick_Login() {
+  //   console.log("Clicked to Login!");
+  // }
   return (
     <Formik
       initialValues={initialValues_}
@@ -38,20 +34,13 @@ export const AdminLogin = () => {
         return (
           <Container className="adminContainer">
             <Form>
-              <p className="header">Register</p>
+              <p className="header">Admin</p>
               <label>Username</label>
               <Field className="field" type="text" name="username" />
               <ErrorMessage className="error" name="username" component="div" />
               <label>Password</label>
               <Field className="field" type="password" name="password" />
               <ErrorMessage className="error" name="password" component="div" />
-              <label>Confirm Password</label>
-              <Field className="field" type="password" name="confirmPassword" />
-              <ErrorMessage
-                className="error"
-                name="confirmPassword"
-                component="div"
-              />
 
               <div className = "button-wrapper">
                 <button
@@ -59,13 +48,9 @@ export const AdminLogin = () => {
                   type="submit"
                   disabled={!formik.isValid}
                 >
-                  Register
+                  Submit
                 </button>
               </div>
-
-              <a href="#" onClick={onClick_Login}>
-                Already have an account? Login
-              </a>
             </Form>
           </Container>
         );

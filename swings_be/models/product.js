@@ -5,54 +5,55 @@ const productSchema = mongoose.Schema({
         type: String, 
         required: true 
     },
-    // slug: { 
-    //     type: String, 
-    //     required: true, 
-    //     unique: true 
-    // },
-    category: {
-        type: String,
-        required: true
-    },
-    SubCategory: {
-        type: String,
-    },
-    description: { 
-        type: String 
+    slug: { 
+        type: String, 
+        required: true, 
+        unique: true 
     },
     price: { 
         type: Number, 
         required: true 
     },
-    discount: { 
+    stock: { 
+        type: Number, 
+        required: true 
+    },
+    description: { 
         type: String 
     },
-    size: [],
-    img: [],
-    rateting: [
+    image: [
         {
-            _id: mongoose.Schema.Types.ObjectId,
-            userId: { 
-                type: mongoose.Schema.Types.ObjectId, 
-                ref: 'User' },
-            score: String,
+            img: {
+                type: String,
+                required: true
+            }
         }
     ],
-    // keyword: {type: String},
-    // category: { 
-    //     type: mongoose.Schema.Types.ObjectId, 
-    //     ref: 'Category', 
-    //     required: true  
-    // },
-    // createdAt: { type: Date, default: Date.now },
+    rating: [
+        {
+            _id: mongoose.Schema.Types.ObjectId,
+            userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+            rating: String,
+            createdAt: Date
+        }
+    ],
+    keyword: {type: String},
+    category: { 
+        type: String, 
+        required: true  
+    },
+    createdAt: { 
+        type: Date, 
+        default: Date.now 
+    },
     // createdBy: { 
     //     type: mongoose.Schema.Types.ObjectId, 
     //     ref: 'Admin' 
     // },
-    // // updatedAt: Date,
+    updatedAt: Date,
     // updatedBy: { 
     //     type: mongoose.Schema.Types.ObjectId, 
-    //     ref: 'Admin' 
+    //     ref: 'Admin'
     // }
 });
 

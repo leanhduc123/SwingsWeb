@@ -9,14 +9,14 @@ const User = require('../models/user');
 const UserAddress = require('../models/userAddress');
 
 router.post('/register', (req, res, next) => {
-    // User.findOne({username: req.body.username})
-    // .exec()
-    // .then(user => {
-    //     if(user){
-    //         return res.status(500).json({
-    //             message: 'Username đã tồn tại'
-    //         })
-    //     }else{
+    User.findOne({username: req.body.username})
+    .exec()
+    .then(user => {
+        if(user){
+            return res.status(500).json({
+                message: 'Username đã tồn tại'
+            })
+        }else{
             bcrypt.hash(req.body.password, 10, (err, hash) => {
                 if(err){
                     return res.status(500).json({
@@ -45,9 +45,9 @@ router.post('/register', (req, res, next) => {
                     });
                 }
             });
-        })
-//     });
-// });
+        }
+    });
+});
 
 router.post('/login', (req, res, next) => {
     User.findOne({username: req.body.username})
@@ -105,61 +105,61 @@ router.post('/login', (req, res, next) => {
     })
 });
 
-// router.post('/new-address', authenticate, (req, res, next) => {
-//     UserAddress.findOne({"userId": req.body.userId})
-//     .exec()
-//     .then(user => {
-//         if(user){
-//             UserAddress.findOneAndUpdate({"user": req.body.userId}, {
-//                 $push: {
-//                     "address": req.body.address
-//                 }
-//             }, {
-//                 new: true
-//             })
-//             .then(doc => {
-//                 res.status(201).json({
-//                     message: doc
-//                 });
-//             });
+router.post('/new-address', authenticate, (req, res, next) => {
+    UserAddress.findOne({"userId": req.body.userId})
+    .exec()
+    .then(user => {
+        if(user){
+            UserAddress.findOneAndUpdate({"user": req.body.userId}, {
+                $push: {
+                    "address": req.body.address
+                }
+            }, {
+                new: true
+            })
+            .then(doc => {
+                res.status(201).json({
+                    message: doc
+                });
+            });
 
-//         }else{
-//             const userAddress = new UserAddress({
-//                 _id: new mongoose.Types.ObjectId(),
-//                 userId: req.body.userId,
-//                 address: req.body.address
-//             });
-//             userAddress.save()
-//             .then(doc => {
-//                 res.status(201).json({
-//                     message: doc
-//                 });
-//             })
-//             .catch(error => {
-//                 res.status(500).json({
-//                     error: error
-//                 });
-//             })
-//         }
-//     });
+        }else{
+            const userAddress = new UserAddress({
+                _id: new mongoose.Types.ObjectId(),
+                userId: req.body.userId,
+                address: req.body.address
+            });
+            userAddress.save()
+            .then(doc => {
+                res.status(201).json({
+                    message: doc
+                });
+            })
+            .catch(error => {
+                res.status(500).json({
+                    error: error
+                });
+            })
+        }
+    });
 
-// });
+});
 
-// router.get('/get-address/:userId', authenticate, (req, res, next) => {
-//     UserAddress.findOne({"userId": req.params.userId})
-//     .select('_id userId address')
-//     .exec()
-//     .then(user => {
-//         res.status(200).json({
-//             message: user
-//         })
-//     })
-//     .catch(error => {
-//         res.status(500).json({
-//             error: error
-//         })
-//     })
+router.get('/get-address/:userId', authenticate, (req, res, next) => {
+    UserAddress.findOne({"userId": req.params.userId})
+    .select('_id userId address')
+    .exec()
+    .then(user => {
+        res.status(200).json({
+            message: user
+        })
+    })
+    .catch(error => {
+        res.status(500).json({
+            error: error
+        })
+    })
 
-// });
+});
 
 module.exports = router;
