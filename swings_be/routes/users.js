@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const authenticate  = require('../middleware/authenticate');
 
 const User = require('../models/user');
-const Profile = require('../models/profile');
+const user = require('../models/user');
 
 router.post('/register', (req, res, next) => {
     User.findOne({username: req.body.username})
@@ -26,9 +26,11 @@ router.post('/register', (req, res, next) => {
                     const user = new User({
                         _id: new mongoose.Types.ObjectId(),
                         username: req.body.username,
-                        //name: req.body.name,
+                        name: req.body.name,
                         email: req.body.email,
                         password: hash,
+                        address: req.body.address,
+                        phone: req.body.phone
                         //createdAt: new Date().toISOString()
                     });
                     user.save()
@@ -64,6 +66,7 @@ router.post('/login', (req, res, next) => {
                     if(result){
                         const payload = {
                             userId: user._id,
+                            username: user.name, 
                             iat:  Math.floor(Date.now() / 1000) - 30,
                             exp: Math.floor(Date.now() / 1000) + (60 * 60 * 60 * 24),
                         }
@@ -105,52 +108,44 @@ router.post('/login', (req, res, next) => {
     })
 });
 
-router.post('/profile', authenticate, (req, res, next) => {
-    Profile.findOne({"userId": req.body.userId})
-    .exec()
-    .then(user => {
-        if(user){
-            Profile.findOneAndUpdate({"userId": req.body.userId}, {
-                userId: req.body.userId,
-                name: req.body.name,
-                phone: req.body.phone,
-                address: req.body.address
-            }, {
-                new: true
-            })
-            .then(doc => {
-                res.status(201).json({
-                    message: doc
-                });
-            });
+router.put("/:id", authenticate, async (req,res) => {
+    const userId = req.params.id
+    const user = await User.findById({_id: userId})
+    if (user) {
+        user.username = req.body.username
+        user.email = req.body.email
+        user.password = req.body.password
+        user.address = req.body.address
+        user.phone = req.body.phone
+        user.name = req.body.name
+        const updateUser = await user.save()
+        res.status(201).json({
+            message: updateUser
+        })
+    } else {
+        res.status(404).json({
+            message: 'Not found'
+        })
+    }
+})
+router.get('/', authenticate,async (req,res,next) =>{
+    await User.find()
+    .then(users=>{
+        res.status(201).json({
+            message: users
+        })
+    })
+    .catch(error => {
+        res.status(500).json({
+            error: error
+        })
 
-        }else{
-            const profile = new Profile({
-                _id: new mongoose.Types.ObjectId(),
-                userId: req.body.userId,
-                name: req.body.name,
-                phone: req.body.phone,
-                address: req.body.address
-            });
-            profile.save()
-            .then(doc => {
-                res.status(201).json({
-                    message: doc
-                });
-            })
-            .catch(error => {
-                res.status(500).json({
-                    error: error
-                });
-            })
-        }
-    });
+    })
+})
 
-});
-
-router.get('/profile/:id', authenticate, (req, res, next) => {
-    const user = req.params.userId
-    Profile.findOne({userId : user})
+router.get('/:id', authenticate,async (req, res, next) => {
+    const userId = req.params.userId
+    await User.findOne({_Id : userId})
     .then(user => {
         res.status(200).json({
             message: user
