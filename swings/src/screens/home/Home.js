@@ -17,6 +17,42 @@ import { Account } from '../user/Account'
 import { Transactions } from '../user/Transactions'
 import { Custom } from '../user/Custom'
 import { Search } from '../products/Search'
+import { useEffect } from 'react'
+import { useContext } from 'react'
+import { AuthUserCtx } from '../../context/authUser'
+import { objectOf } from 'prop-types'
+import Axios from 'axios'
+
+
+const getWithExpiry = (key) => {
+    const itemStr = localStorage.getItem(key)
+  
+    // if the item doesn't exist, return null
+    if (!itemStr) {
+      return null
+    }
+  
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+  
+    // compare the expiry time of the item with the current time
+    if (now.getTime() > item.expiry) {
+      // If the item is expired, delete the item from storage
+      // and return null
+      localStorage.removeItem(key)
+      return null
+    }
+    return item.user
+}
+
+const setWithExpiry = (key, obj, ttl) => {
+    const now = new Date()
+    const item = {
+      user: obj,
+      expiry: now.getTime() + ttl,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+}
 
 const product = [{
     name: "Áo khoác",
@@ -101,6 +137,38 @@ const home = () => {
 }
 
 export const Home = () => {
+    const { authUser } = useContext(AuthUserCtx)
+    const { setAuthUser } = useContext(AuthUserCtx)
+    // const fetchMeApi = useAuth()
+
+    const fetchData = () => {
+        Axios
+        .get("http://localhost:5000/products/")
+        .then((res) => {console.log(res.data)})
+        .catch((err) => { console.log(err)})
+    }
+
+    useEffect(() => {
+        setAuthUser(getWithExpiry("myUser"))
+        // console.log(getWithExpiry("myUser"))
+        var obj = getWithExpiry("myUser")
+        if (obj !== null) {
+            setWithExpiry("myUser", {username: obj.username, userId: obj.userId}, 100000)
+        }
+        // console.log(authUser)
+        // console.log(setAuthUser)
+    },[])
+
+    useEffect(() => {
+        // console.log("Home: "+authUser)
+    }, [authUser])
+
+    useEffect(() => {
+        fetchData()
+    })
+    // if (authUser !== null) {
+    //     console.log("Home: "+authUser)
+    // }
     const linkList =
         [{ type: "SALE OFF 50%", link: "/collections/sale-50" },
         { type: "ÁO", link: "/collections/ao" },
@@ -201,12 +269,12 @@ export const Home = () => {
                             </form>
                         </Col>
                         <Col lg='2' className="icon-box">
-                            <Link to="/cart" className="icon">
+                            <a href="/cart" className="icon">
                                 <FontAwesomeIcon  icon={faShoppingCart}/>
-                            </Link>
-                            <Link to="/login" className="icon">
+                            </a>
+                            <a href="/login" className="icon">
                                 <FontAwesomeIcon  icon={faUserCircle} />
-                            </Link>
+                            </a>
                         </Col>
                     </Row>
                 </Container>

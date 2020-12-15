@@ -1,11 +1,13 @@
 import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import React, {useContext} from 'react'
 import { Container, Row, Col, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { AuthUserCtx } from '../../context/authUser';
 import "../../css/account.css"
 
 export const Account = () => {
+    const { setAuthUser } = useContext(AuthUserCtx)
     return (
         <div style={{ paddingBottom: 50 }}>
             <div className="header-title">
@@ -21,7 +23,7 @@ export const Account = () => {
                                     <FontAwesomeIcon icon={faDotCircle} className="icon" />
                                     Thông tin tài khoản
                                 </Link>
-                                <Link to="/account" className="link">
+                                <Link to="/" className="link" onClick={() => {localStorage.removeItem("myUser"); setAuthUser(null)}}>
                                     <FontAwesomeIcon icon={faDotCircle} className="icon" />
                                     Đăng xuất
                                 </Link>

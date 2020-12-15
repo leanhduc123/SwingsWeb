@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import "../../css/register.css"
 import axios from "axios"
+import { Redirect } from 'react-router-dom';
 
 const validationSchema_ = Yup.object().shape({
   username: Yup.string()
@@ -24,6 +25,8 @@ export const Register = () => {
   const [isSuccess, setSuccess] = useState(false);
   const [isError, setError] = useState(false);
   const [show, setShow] = useState(false);
+  const [field, setfield] = useState("")
+
   const initialValues_ = {
     username: "",
     email: "",
@@ -51,45 +54,53 @@ export const Register = () => {
       .finally(() => {
         setRegistering(false);
         setShow(true)
-        var values = document.getElementsByClassName("field")
-        console.log(values)
       });
   };
-  function onClick_Login() {
-    console.log("Clicked to Login!");
+
+  const onClose = (setFieldValue) => {
+    setShow(false); 
+    setFieldValue("username", "");
+    setFieldValue("email", "");
+    setFieldValue("password", "");
+    setFieldValue("confirmPassword", "");
   }
+
   return (
     <Formik
       initialValues={initialValues_}
       validationSchema={validationSchema_}
       onSubmit={onSubmit_}
     >
-      {(formik) => {
+      {({
+        values,
+        errors,
+        setFieldValue
+      }) => {
         return (
           <Container className="register">
-            <Modal show={show && isSuccess && !isError} onHide={() => { setShow(false) }}>
-                <Modal.Header closeButton>
-                    <span>Đăng kí thành công</span>
-                </Modal.Header>
+            <Modal show={show && isSuccess && !isError} onHide={() => {onClose(setFieldValue)}}>
+              <Modal.Header closeButton>
+                <span>Đăng kí thành công</span>
+              </Modal.Header>
             </Modal>
             <Modal show={show && isError && !isSuccess} onHide={() => { setShow(false) }}>
-                <Modal.Header closeButton>
-                    <span>Tài khoản không hợp lệ</span>
-                </Modal.Header>
+              <Modal.Header closeButton>
+                <span>Tài khoản không hợp lệ</span>
+              </Modal.Header>
             </Modal>
             <Form>
               <p className="header">Register</p>
               <label>Username</label>
-              <Field className="field" type="text" name="username" />
-              <ErrorMessage className="error" name="username" component="div" />
+              <Field className="field" type="text" name="username" value={values.username}/>
+              <ErrorMessage className="error" name="username" component="div"/>
               <label>Email</label>
-              <Field className="field" type="email" name="email" />
+              <Field className="field" type="email" name="email"  value={values.email}/>
               <ErrorMessage className="error" name="email" component="div" />
               <label>Password</label>
-              <Field className="field" type="password" name="password" />
+              <Field className="field" type="password" name="password" value={values.password}/>
               <ErrorMessage className="error" name="password" component="div" />
               <label>Confirm Password</label>
-              <Field className="field" type="password" name="confirmPassword" />
+              <Field className="field" type="password" name="confirmPassword" value={values.confirmPassword} />
               <ErrorMessage
                 className="error"
                 name="confirmPassword"
@@ -103,12 +114,12 @@ export const Register = () => {
                   disabled={registering}
                 >
                   {registering ? "Registering ..." : "Register"}
-                  </button>
+                </button>
               </div>
 
-              <a href="/login" onClick={onClick_Login}>
+              <a href="/login">
                 Already have an account? Login
-                </a>
+              </a>
             </Form>
           </Container>
         );
