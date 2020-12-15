@@ -17,43 +17,34 @@ export const Custom = () => {
     const [address, setAddress] = useState("")
     const [user, setUser] = useState(null)
 
-    // useEffect(() => {
-    //     const fetchUserProfile = async () => {
-    //         Axios.get("http://localhost:5000/5fd8894ad22f131d9cd3dd7f")
-    //     }
-    // })
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            Axios.get("http://localhost:5000/" + authUser.userId)
+            .then((res) => {setUser(res.data.message)})
+            .catch((err) => {console.log(err)})
+        }
+    },[])
 
     const updateProfile = async (user) => {
-        Axios.put("http://localhost:5000/:id?id=5fd8894ad22f131d9cd3dd7f", user)
+        Axios.put("http://localhost:5000/5fd8894ad22f131d9cd3dd7f", user)
             .then((res) => { console.log(res.data.message) })
             .catch((res) => { console.log(res) })
     }
-    useEffect(() => {
-        var user = {
-            username: "leanhduc",
-            name: "le anh duc",
-            email: "email",
-            password: "123123",
-            address: "address",
-            phone: "phone",
-        }
-        updateProfile(user)
-    },[])
     const handleSubmit = (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
         }
-        var user = {
-            username: "leanhduc",
-            name: "le anh duc",
+        var userSample = {
+            username: user.usrname,
+            name: fullname,
             email: email,
-            password: "$2b$10$wWvAWDktZlcYmxPZEvjHo./SMKvI0vFSyBCDp8t8FpNSIwYEzC4Zu",
+            password: user.password,
             address: address,
             phone: phone,
         }
-        updateProfile(user)
+        updateProfile(userSample)
     }
     const onChange = (event, setValue) => {
         setValue(event.currentTarget.value)

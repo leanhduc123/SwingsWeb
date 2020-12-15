@@ -112,9 +112,9 @@ router.put("/:id",  async (req,res) => {
     const userId = req.params.id
     const user = await User.findById({_id: userId})
     if (user) {
-        user.username = req.body.username
+        // user.username = req.body.username
         user.email = req.body.email
-        user.password = req.body.password
+        // user.password = req.body.password
         user.address = req.body.address
         user.phone = req.body.phone
         user.name = req.body.name
