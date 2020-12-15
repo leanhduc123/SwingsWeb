@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col, Modal, Form, Button } from 'react-bootstrap'
 import "../../css/cart.css"
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStore } from '@fortawesome/free-solid-svg-icons';
+import { AuthUserCtx } from '../../context/authUser';
 
 const Item = (props) => {
-    const [name, setName] = useState(props.name);
-    const [id, setId] = useState(props.id)
-    const [price, setPrice] = useState(props.price)
+    // const [name, setName] = useState(props.name);
+    // const [id, setId] = useState(props.id)
+    // const [price, setPrice] = useState(props.price)
+    const { authUser } = useContext(AuthUserCtx)
 
     const [quantity, setQuantity] = useState(props.quantity);
     useEffect(() => {
@@ -61,7 +63,7 @@ const Item = (props) => {
         <div className="cart-item">
             <div className="product_img">
                 <Link to={"/collections/" + props.id}>
-                    <img src="http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg" alt="product_img" />
+                    <img src={props.img} alt="product_img" />
                 </Link>
             </div>
             <div className="content-item">
@@ -109,10 +111,22 @@ export const Cart = () => {
     const [products, setProducts] = useState(localStorage.getObj("cart") === null ? [] : localStorage.getObj("cart"))
     const [total, setTotal] = useState(calculate(products))
     const [totalQty, setTotalQty] = useState(parseInt(localStorage.getItem("total")))
-
+    const [empty, setEmpty] = useState(false)
+    const updateItem = () => {
+        if (totalQty === 0) {
+            setEmpty(true)
+        } else {
+            setShow(true)
+        }
+    }
 
     return (
         <Container>
+            <Modal show={empty} onHide={() => { setEmpty(false) }}>
+                <Modal.Header closeButton>
+                    <span>Bạn không có vật phẩm nào trong giỏ</span>
+                </Modal.Header>
+            </Modal>
             <Modal className="modal_box" show={show} onHide={() => { setShow(false) }}>
                 <Modal.Header closeButton>
                     <h3>Thông tin đơn hàng</h3>
@@ -172,7 +186,7 @@ export const Cart = () => {
                                 <p>Phí vận chuyển sẽ được thông báo sau.</p>
                             </div>
                             <div className="sidebox-action">
-                                <button className="submit-items" onClick={() => { setShow(true) }} disabled={totalQty === 0}>Thanh toán</button>
+                                <button className="submit-items" onClick={() => { updateItem() }} disabled={totalQty === 0}>Thanh toán</button>
                                 <p>
                                     <Link to="/" className="returnBtn">
                                         <FontAwesomeIcon icon={faStore} className="icon" />

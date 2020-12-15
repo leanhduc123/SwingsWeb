@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Col, Container, Modal, Row } from 'react-bootstrap';
 import "../../css/productInfo.css"
 import { Carousel } from "react-responsive-carousel";
@@ -6,6 +6,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import ReactStars from "react-rating-stars-component";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons';
+import Axios from 'axios'
 
 const sizeList = ['s', 'm', 'l', 'xl', 'xll'];
 const hdList = [
@@ -24,28 +25,11 @@ const hdList = [
     { type: "QUẦN JOGGER - QUẦN DÀI", img: "//file.hstatic.net/200000201725/file/quan_jogger_06eae128a000431496275e8c6ce709ea_master.jpg" },
 ]
 
-const product = {
-    name: "Áo khoác",
-    productId: "12312",
-    price: 650000,
-    img: [
-        "http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg",
-        "http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg"
-    ],
-    size: ["M", "L", "XL", "XLL"],
-    discount: 50,
-    description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
-    rating: [
-        { username: "duc", score: 3 },
-        { username: "linh", score: 2 },
-        { username: "hoang", score: 1 },
-        { username: "kien", score: 5 },
-        { username: "thai", score: 3 },
-    ]
-}
-
 const countStar = (rating) => {
     var count = 0
+    if (rating.length === 0) {
+        return 0;
+    }
     var x
     for (x in rating) {
         count += rating[x].score
@@ -55,14 +39,28 @@ const countStar = (rating) => {
 
 export const ProductInfo = ({ match }) => {
     // console.log(match.params.productId)
-    product.productId = match.params.productId
+    const [product, setProduct] = useState(null)
     const [quantity, setQuantity] = useState(1);
-    const [size, setSize] = useState(product.size[0].toLowerCase());
+    const [size, setSize] = useState(null);
     const [img, setImg] = useState(hdList[0].img)
-    const [star, setStar] = useState(countStar(product.rating));
+    const [star, setStar] = useState(0);
 
     const [show, setShow] = useState(false);
     const [alert, setAlert] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await Axios
+                .get("http://localhost:5000/products/5fd5de2925aca91fc47979fc")
+                .then((res) => {
+                    setProduct(res.data.message)
+                    setSize(res.data.message.size[0].toLowerCase())
+                    setStar(countStar(res.data.message.rating))
+                })
+                .catch((err) => { console.log(err) })
+        }
+        fetchData()
+    }, [])
 
     const changeSize = (e) => {
         document.getElementsByClassName("sd")[0].className = "";
@@ -75,34 +73,32 @@ export const ProductInfo = ({ match }) => {
     const update = () => {
         var cartList = localStorage.getObj("cart")
         var total = parseInt(localStorage.getItem("total"))
-        
+
         if (cartList === null) {
             cartList = []
-        } 
+        }
         if (!total) {
             total = 0
         }
         var index = cartList.findIndex((item) => {
-            return item.id === product.productId && item.size === size
+            return item.id === product._id && item.size === size
         })
         if (index === -1) {
             cartList.push({
                 name: product.name,
-                id: product.productId,
-                price: product.price * (100 - product.discount) / 100,
+                id: product._id,
+                price: product.price * (100 - parseInt(product.discount)) / 100,
                 size: size,
-                img: product.img[0],
+                img: Object.keys(product.image[0]).map((key) => product.image[0][key]).join(""),
                 quantity: quantity
             })
-            localStorage.setObj("cart",cartList)
+            localStorage.setObj("cart", cartList)
         } else {
             cartList[index].quantity += quantity
-            localStorage.setObj("cart",cartList)
+            localStorage.setObj("cart", cartList)
         }
         total += quantity
         localStorage.setItem("total", total)
-        // console.log(cartList)
-        // console.log(total)
         setAlert(true)
     }
 
@@ -114,6 +110,10 @@ export const ProductInfo = ({ match }) => {
     const ratingChanged = (newRating) => {
         setStar(newRating)
     };
+
+    if (product === null) {
+        return (<div></div>)
+    }
 
     return (
         <div>
@@ -145,10 +145,10 @@ export const ProductInfo = ({ match }) => {
                 <Col md="7">
                     <Carousel>
                         <div>
-                            <img alt="" src="http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg" />
+                            <img alt="" src={Object.keys(product.image[0]).map((key) => product.image[0][key]).join("")} />
                         </div>
                         <div>
-                            <img alt="" src="http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg" />
+                            <img alt="" src={Object.keys(product.image[1]).map((key) => product.image[1][key]).join("")} />
                         </div>
                     </Carousel>
                 </Col>
@@ -159,11 +159,11 @@ export const ProductInfo = ({ match }) => {
                         <span id="id_prod">{product.productId}</span>
                     </Row>
                     <Row className="pro_row price">
-                        <span className={product.discount === 0 ? "no" : "discount"}>
-                            {"-" + product.discount + "%"}
+                        <span className={parseInt(product.discount) === 0 ? "no" : "discount"}>
+                            {"-" + parseInt(product.discount) + "%"}
                         </span>
-                        <span id="price">{(product.price * (100 - product.discount) / 100).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}</span>
-                        <del className={product.discount === 0 ? "no" : "bonus"}>
+                        <span id="price">{(product.price * (100 - parseInt(product.discount)) / 100).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}</span>
+                        <del className={parseInt(product.discount) === 0 ? "no" : "bonus"}>
                             {product.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}
                         </del>
                     </Row>

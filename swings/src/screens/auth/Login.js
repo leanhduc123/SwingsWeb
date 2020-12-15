@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'
-import { Container } from 'react-bootstrap'
+import { Container, Modal } from 'react-bootstrap'
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import axios from "axios";
@@ -9,6 +9,9 @@ import { Redirect } from 'react-router-dom';
 
 export const Login = () => {
   const { authUser, setAuthUser } = useContext(AuthUserCtx);
+  const [isError, setError ] = useState(false)
+  const [show, setShow] = useState(false);
+  const [login, setLogin] = useState(false);
 
   useEffect(() => {
     console.log("prepare login: " + authUser)
@@ -39,6 +42,7 @@ export const Login = () => {
       .required("Password is required!"),
   });
   const onSubmit_ = (values) => {
+    setLogin(true);
     axios
       .post("http://localhost:5000/login", {
         username: values.username,
@@ -54,6 +58,11 @@ export const Login = () => {
       .then(() => {console.log("Login: " + authUser)})
       .catch((err) => {
         console.log(err)
+        setError(true)
+        setShow(true)
+      })
+      .finally(() => {
+        setLogin(false)
       });
   };
   function onClick_Login() {
@@ -74,9 +83,13 @@ export const Login = () => {
     return <Redirect to="/account" />
   }
 
-  // if (registing) {
-  //   return <Redirect to="/" />
-  // }
+  const onClose = (setFieldValue) => {
+    setShow(false); 
+    setError(true);
+
+    setFieldValue("username", "");
+    setFieldValue("password", "");
+  }
 
   return (
     <Formik
@@ -84,25 +97,33 @@ export const Login = () => {
       validationSchema={validationSchema_}
       onSubmit={onSubmit_}
     >
-      {(formik) => {
+      {({values,
+        errors,
+        setFieldValue,
+        isValid}) => {
         return (
           <Container className="login">
+            <Modal show={show && isError} onHide={() => {onClose(setFieldValue)}}>
+              <Modal.Header closeButton>
+                <span>Mật khẩu sai hoặc tài khoản không tồn tại!</span>
+              </Modal.Header>
+            </Modal>
             <Form>
               <p className="header">Log in</p>
               <label>Username</label>
-              <Field className="field" type="text" name="username" />
+              <Field className="field" type="text" name="username" value={values.username}/>
               <ErrorMessage className="error" name="username" component="div" />
               <label>Password</label>
               <Field className="field" type="password" name="password" />
-              <ErrorMessage className="error" name="password" component="div" />
+              <ErrorMessage className="error" name="password" component="div" value={values.password}/>
 
               <div className="button-wrapper">
                 <button
                   className="button"
                   type="submit"
-                  disabled={!formik.isValid}
+                  disabled={login && !isValid}
                 >
-                  Submit
+                  {login ? "Login..." : "Login"}
                   </button>
               </div>
 

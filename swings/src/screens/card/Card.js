@@ -1,6 +1,5 @@
 import React from 'react'
 import { Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
 import "../../css/card.css"
 
@@ -12,13 +11,13 @@ export const Card = (props) => {
                 <div className={product.discount === 0 ? "no" : "product-sale"}>
                     <span>{"-" + product.discount + "%"}</span>
                 </div>
-                <Link className="name" to={`/collections/${product.productId}`}>
+                <a className="name" to={`/collections/${product.productId}`}>
                     <img className="img2" src={product.img[1]} alt={product.name} />
                     <img className="img1" src={product.img[0]} alt={product.name} />
-                </Link>
+                </a>
             </div>
             <div className="namePrice">
-                <Link className="name" to={`/collections/${product.productId}`}>{product.name}</Link>
+                <a className="name" to={`/collections/${product.productId}`}>{product.name}</a>
                 <div className="price">
                     <span className={(product.discount > 0) ? "discount" : "no discount"}>
                         {(product.price*product.discount/100).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}

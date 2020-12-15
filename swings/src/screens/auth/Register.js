@@ -10,8 +10,8 @@ const validationSchema_ = Yup.object().shape({
   username: Yup.string()
     .min(6, "Username's length must be greater than 6!")
     .required("Username is required!"),
-  email: Yup.string()
-    .required("Email is required!"),
+  fullname: Yup.string()
+    .required("Fullname is required!"),
   password: Yup.string()
     .min(6, "Password's length must be greater than 6!")
     .required("Password is required!"),
@@ -25,11 +25,10 @@ export const Register = () => {
   const [isSuccess, setSuccess] = useState(false);
   const [isError, setError] = useState(false);
   const [show, setShow] = useState(false);
-  const [field, setfield] = useState("")
 
   const initialValues_ = {
     username: "",
-    email: "",
+    fullname: "",
     password: "",
     confirmPassword: "",
   };
@@ -39,8 +38,11 @@ export const Register = () => {
     axios
       .post("http://localhost:5000/register", {
         username: values.username,
-        email: values.email,
+        name: values.fullname,
         password: values.password,
+        email: "",
+        address: "",
+        phone: ""
       })
       .then(() => {
         setSuccess(true);
@@ -58,9 +60,9 @@ export const Register = () => {
   };
 
   const onClose = (setFieldValue) => {
-    setShow(false); 
+    setShow(false);
     setFieldValue("username", "");
-    setFieldValue("email", "");
+    setFieldValue("fullname", "");
     setFieldValue("password", "");
     setFieldValue("confirmPassword", "");
   }
@@ -74,11 +76,12 @@ export const Register = () => {
       {({
         values,
         errors,
-        setFieldValue
+        setFieldValue,
+        isValid
       }) => {
         return (
           <Container className="register">
-            <Modal show={show && isSuccess && !isError} onHide={() => {onClose(setFieldValue)}}>
+            <Modal show={show && isSuccess && !isError} onHide={() => { onClose(setFieldValue) }}>
               <Modal.Header closeButton>
                 <span>Đăng kí thành công</span>
               </Modal.Header>
@@ -90,14 +93,14 @@ export const Register = () => {
             </Modal>
             <Form>
               <p className="header">Register</p>
+              <label>Full name</label>
+              <Field className="field" type="text" name="fullname" value={values.fullname} />
+              <ErrorMessage className="error" name="fullname" component="div" />
               <label>Username</label>
-              <Field className="field" type="text" name="username" value={values.username}/>
-              <ErrorMessage className="error" name="username" component="div"/>
-              <label>Email</label>
-              <Field className="field" type="email" name="email"  value={values.email}/>
-              <ErrorMessage className="error" name="email" component="div" />
+              <Field className="field" type="text" name="username" value={values.username} />
+              <ErrorMessage className="error" name="username" component="div" />
               <label>Password</label>
-              <Field className="field" type="password" name="password" value={values.password}/>
+              <Field className="field" type="password" name="password" value={values.password} />
               <ErrorMessage className="error" name="password" component="div" />
               <label>Confirm Password</label>
               <Field className="field" type="password" name="confirmPassword" value={values.confirmPassword} />
@@ -111,7 +114,7 @@ export const Register = () => {
                 <button
                   className="button"
                   type="submit"
-                  disabled={registering}
+                  disabled={registering && !isValid}
                 >
                   {registering ? "Registering ..." : "Register"}
                 </button>

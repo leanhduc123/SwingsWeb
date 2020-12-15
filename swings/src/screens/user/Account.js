@@ -1,13 +1,26 @@
 import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 import { Container, Row, Col, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { AuthUserCtx } from '../../context/authUser';
 import "../../css/account.css"
+import Axios from 'axios'
 
 export const Account = () => {
-    const { setAuthUser } = useContext(AuthUserCtx)
+    const { authUser, setAuthUser } = useContext(AuthUserCtx)
+    useEffect(() => {
+        const fetchData = async () => {
+            await Axios
+                .get("http://localhost:5000/" + authUser.userId)
+                .then((res) => {
+                   console.log(res.data.message)
+                })
+                .catch((err) => { console.log(err) })
+        }
+        fetchData()
+    }, [])
+    
     return (
         <div style={{ paddingBottom: 50 }}>
             <div className="header-title">
@@ -35,7 +48,7 @@ export const Account = () => {
                         <div className="customer-sidebar">
                             <h3 className="title-detail">Thông tin tài khoản</h3>
                             <h2 className="fullName">lê đức</h2>
-                            <p>username</p>
+                            <p>username: {authUser.username}</p>
                             <p>email</p>
                             <p>số điện thoại</p>
                             <p>địa chỉ</p>

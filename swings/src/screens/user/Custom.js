@@ -1,13 +1,64 @@
 import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import Axios from 'axios'
+import React, { useContext, useState, useEffect } from 'react'
 import { Container, Row, Col, Button, Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import * as Yup from "yup";
+import { AuthUserCtx } from '../../context/authUser'
 import "../../css/custom.css"
 
 
 export const Custom = () => {
+    const { authUser, setAuthUser } = useContext(AuthUserCtx)
+    const [fullname, setFullname] = useState("")
+    const [email, setEmail] = useState("")
+    const [phone, setPhone] = useState("")
+    const [address, setAddress] = useState("")
+    const [user, setUser] = useState(null)
+
+    // useEffect(() => {
+    //     const fetchUserProfile = async () => {
+    //         Axios.get("http://localhost:5000/5fd8894ad22f131d9cd3dd7f")
+    //     }
+    // })
+
+    const updateProfile = async (user) => {
+        Axios.put("http://localhost:5000/:id?id=5fd8894ad22f131d9cd3dd7f", user)
+            .then((res) => { console.log(res.data.message) })
+            .catch((res) => { console.log(res) })
+    }
+    useEffect(() => {
+        var user = {
+            username: "leanhduc",
+            name: "le anh duc",
+            email: "email",
+            password: "123123",
+            address: "address",
+            phone: "phone",
+        }
+        updateProfile(user)
+    },[])
+    const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        var user = {
+            username: "leanhduc",
+            name: "le anh duc",
+            email: email,
+            password: "$2b$10$wWvAWDktZlcYmxPZEvjHo./SMKvI0vFSyBCDp8t8FpNSIwYEzC4Zu",
+            address: address,
+            phone: phone,
+        }
+        updateProfile(user)
+    }
+    const onChange = (event, setValue) => {
+        setValue(event.currentTarget.value)
+    }
+
     return (
         <div style={{ paddingBottom: 50 }}>
             <div className="header-title">
@@ -23,7 +74,7 @@ export const Custom = () => {
                                     <FontAwesomeIcon icon={faDotCircle} className="icon" />
                                     Thông tin tài khoản
                                 </Link>
-                                <Link to="/account" className="link">
+                                <Link to="/" className="link" onClick={() => { localStorage.removeItem("myUser"); setAuthUser(null) }}>
                                     <FontAwesomeIcon icon={faDotCircle} className="icon" />
                                     Đăng xuất
                                 </Link>
@@ -32,27 +83,27 @@ export const Custom = () => {
                         </div>
                     </Col>
                     <Col md={5}>
-                    <Form>
-                        <Form.Group controlId="fullName">
-                            <Form.Label>Họ tên</Form.Label>
-                            <Form.Control type="text" placeholder="Nhập họ tên" />
-                        </Form.Group>
-                        <Form.Group controlId="email">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" placeholder="Nhập email" />
-                        </Form.Group>
-                        <Form.Group controlId="phoneNumber">
-                            <Form.Label>Số điện thoại</Form.Label>
-                            <Form.Control type="text" placeholder="Nhập số điện thoại" />
-                        </Form.Group>
-                        <Form.Group controlId="address">
-                            <Form.Label>Địa chỉ</Form.Label>
-                            <Form.Control type="text" placeholder="Nhập địa chỉ" />
-                        </Form.Group>
-                        <Button variant="secondary" type="submit">
-                            Cập nhật
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group controlId="fullName">
+                                <Form.Label>Họ tên</Form.Label>
+                                <Form.Control type="text" placeholder="Nhập họ tên" onChange={(event) => { onChange(event, setFullname) }} />
+                            </Form.Group>
+                            <Form.Group controlId="email">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control type="email" placeholder="Nhập email" onChange={(event) => { onChange(event, setEmail) }} />
+                            </Form.Group>
+                            <Form.Group controlId="phoneNumber">
+                                <Form.Label>Số điện thoại</Form.Label>
+                                <Form.Control type="text" placeholder="Nhập số điện thoại" onChange={(event) => { onChange(event, setPhone) }} />
+                            </Form.Group>
+                            <Form.Group controlId="address">
+                                <Form.Label>Địa chỉ</Form.Label>
+                                <Form.Control type="text" placeholder="Nhập địa chỉ" onChange={(event) => { onChange(event, setAddress) }} />
+                            </Form.Group>
+                            <Button variant="secondary" type="submit">
+                                Cập nhật
                         </Button>
-                    </Form>
+                        </Form>
                     </Col>
                 </Row>
             </Container>

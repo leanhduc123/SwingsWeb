@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect} from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
 import { Card } from "../card/Card"
 import '../../css/nav.css'
-import { Link, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import { Cart } from '../products/Cart'
 import { ProductInfo } from '../products/ProductInfo'
 import { ProductList } from '../products/ProductList'
@@ -17,10 +17,8 @@ import { Account } from '../user/Account'
 import { Transactions } from '../user/Transactions'
 import { Custom } from '../user/Custom'
 import { Search } from '../products/Search'
-import { useEffect } from 'react'
 import { useContext } from 'react'
 import { AuthUserCtx } from '../../context/authUser'
-import { objectOf } from 'prop-types'
 import Axios from 'axios'
 
 
@@ -93,6 +91,7 @@ const product = [{
 }]
 
 const home = () => {
+
     return (
         <div>
             <Row>
@@ -141,6 +140,16 @@ export const Home = () => {
     const { setAuthUser } = useContext(AuthUserCtx)
     // const fetchMeApi = useAuth()
 
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const result = await Axios
+    //         .get("http://localhost:5000/products/5fd5690a70b8ef178862f1aa")
+    //         .then((res) => { console.log(res.data) })
+    //         .catch((err) => { console.log(err)  })
+    //     }
+    //     fetchData()
+    // },[])
+
     const fetchData = () => {
         Axios
         .get("http://localhost:5000/products/")
@@ -150,25 +159,15 @@ export const Home = () => {
 
     useEffect(() => {
         setAuthUser(getWithExpiry("myUser"))
-        // console.log(getWithExpiry("myUser"))
         var obj = getWithExpiry("myUser")
         if (obj !== null) {
             setWithExpiry("myUser", {username: obj.username, userId: obj.userId}, 100000)
         }
-        // console.log(authUser)
-        // console.log(setAuthUser)
     },[])
 
     useEffect(() => {
-        // console.log("Home: "+authUser)
-    }, [authUser])
-
-    useEffect(() => {
         fetchData()
-    })
-    // if (authUser !== null) {
-    //     console.log("Home: "+authUser)
-    // }
+    }, [])
     const linkList =
         [{ type: "SALE OFF 50%", link: "/collections/sale-50" },
         { type: "ÁO", link: "/collections/ao" },
