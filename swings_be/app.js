@@ -3,15 +3,14 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser')
-const authenticate = require('./middleware/authenticate');
 const http = require('http');
 const port = 5000;
 
 const adminRoutes = require('./routes/admins');
-//const categoryRoutes = require('./routes/categories');
+
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
-//const cartItemRoutes = require('./routes/cartItems');
+
 const orderRoutes = require('./routes/orders');
 
 mongoose.connect('mongodb://localhost/backend', {
@@ -33,7 +32,7 @@ app.use(bodyParser.json())
 app.use('/admin', adminRoutes);
 app.use('/', userRoutes); 
 app.use('/products', productRoutes);
-app.use('/order', authenticate, orderRoutes);
+app.use('/order',  orderRoutes);
 
 app.use((req, res, next) => {
     res.status(404).json({

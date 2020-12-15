@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const authenticate  = require('../middleware/authenticate');
+
 
 const User = require('../models/user');
 const user = require('../models/user');
@@ -108,7 +108,7 @@ router.post('/login', (req, res, next) => {
     })
 });
 
-router.put("/:id", authenticate, async (req,res) => {
+router.put("/:id",  async (req,res) => {
     const userId = req.params.id
     const user = await User.findById({_id: userId})
     if (user) {
@@ -128,7 +128,7 @@ router.put("/:id", authenticate, async (req,res) => {
         })
     }
 })
-router.get('/', authenticate,async (req,res,next) =>{
+router.get('/', async (req,res,next) =>{
     await User.find()
     .then(users=>{
         res.status(201).json({
@@ -143,7 +143,7 @@ router.get('/', authenticate,async (req,res,next) =>{
     })
 })
 
-router.get('/:id', authenticate,async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
     const userId = req.params.userId
     await User.findOne({_Id : userId})
     .then(user => {

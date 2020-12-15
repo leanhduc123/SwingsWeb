@@ -3,7 +3,6 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Product = require('../models/product');
 //const Category = require('../models/category');
-const authenticate = require('../middleware/authenticate');
 
 
 router.get('/', async (req, res,next) => {
@@ -27,9 +26,24 @@ router.get('/', async (req, res,next) => {
         message: products
     })
 });
+
+router.get('/allProduct', async (req, res, next) => {
+    const products = await Product.find()
+    if (products){
+        res.status(201).json({
+            message: products
+        })
+    } else {
+        res.status(500).json({
+            error: error
+        })
+
+    }
+})
+
   
 
-router.post('/addProduct', authenticate,async (req, res, next) => {
+router.post('/addProduct', async (req, res, next) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(), 
         name: req.body.name,
@@ -53,7 +67,7 @@ router.post('/addProduct', authenticate,async (req, res, next) => {
     })
 });
 
-router.put('/:id', authenticate, async (req, res, next) =>{
+router.put('/:id',  async (req, res, next) =>{
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
@@ -75,36 +89,7 @@ router.put('/:id', authenticate, async (req, res, next) =>{
 
 })
 
-// router.get('/', (req, res, next) => {
-//     Product.find({})
-//     //.select('_id name price image ')
-//     .exec()
-//     .then(products => {
-//         res.status(200).json({
-//             message: products
-//         });
-//     })
-//     .catch(error => {
-//         res.status(500).json({
-//             error: error
-//         });
-//     })
-// });
 
-// router.get('/category', (req, res, next) => {
-//     //const category = req.params.category
-//     Product.find().distinct('category')
-//     .then(products =>{
-//         res.status(200).json({
-//             message: products
-//         })
-//     })
-//     .catch(error => {
-//         res.status(500).json({
-//             error: error
-//         });
-//     })
-// })
 
 router.get('/:id',async (req, res, next) => {
     const product = await Product.findOne({_id:req.params.id})
@@ -118,7 +103,7 @@ router.get('/:id',async (req, res, next) => {
         });
     }
 })
-router.delete('/:id', authenticate,  async (req, res, next) => {
+router.delete('/:id',  async (req, res, next) => {
     const deletedProduct = await Product.findById(req.params.id);
     if (deletedProduct) { 
         await deletedProduct.remove()
@@ -132,37 +117,5 @@ router.delete('/:id', authenticate,  async (req, res, next) => {
 });
   
 
-// router.get('/category', (req, res, next) => {
-//     const category = req.params.category;
-//     Product.findOne({category: category})
-//     .exec()
-//     .then(category => {
-//         if(category){
-//             Product.find({ "category": { $in: categoriesAr } })
-//             .select('_id name price image category ')
-//             .exec()
-//             .then(products => {
-//                 res.status(200).json({
-//                     message: products
-//                 })
-//             })
-//             .catch(error => {
-//                 res.status(500).json({
-//                     error: error
-//                 })
-//             })                    
-//         .catch(error => {})
-//         }else{
-//             return res.status(404).json({
-//                 message: 'Not Found'
-//             })
-//         }
-//     })
-//     .catch(er => {
-//         res.status(500).json({
-//             error: er
-//         });
-//     });
-// });
 
 module.exports = router;
