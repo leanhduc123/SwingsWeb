@@ -1,30 +1,72 @@
 import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, {useContext, useEffect, useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Container, Row, Col, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { AuthUserCtx } from '../../context/authUser';
 import "../../css/account.css"
 import Axios from 'axios'
+const Item = ({product}) => {
+    function formatDate(date, format) {
+        const map = {
+            mm: date.getMonth() + 1,
+            dd: date.getDate(),
+            yy: date.getFullYear().toString().slice(-2),
+            yyyy: date.getFullYear()
+        }
+    
+        return format.replace(/mm|dd|yy|yyy/gi, matched => map[matched])
+    }
+    return (
+        <tr>
+            <td className="order_id text-center">
+                <Link to={"/account/orders/" + product._id} className="transactionId">
+                    {"#" + product._id.substr(0, 6) + "..."}
+                </Link>
+            </td>
+            <td className="date text-center">
+                <span>{formatDate(product.orderDate, 'dd/mm/yy')}</span>
+            </td>
+            <td className="total text-right">
+                <span>{product.total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}</span>
+            </td>
+            <td className="status text-center">
+                <span>{product.isOrderComplete ? "Đã xử lý" : "Chưa xử lý"}</span>
+            </td>
+        </tr>
+    )
+}
 
 export const Account = () => {
     const { authUser, setAuthUser } = useContext(AuthUserCtx)
-    const [ user, setUser ] = useState(null)
+    const [user, setUser] = useState(null)
+    const [transactions, setTransactions] = useState(null)
     useEffect(() => {
         const fetchData = async () => {
             await Axios
                 .get("http://localhost:5000/" + authUser.userId)
                 .then((res) => {
-                   setUser(res.data.message)
+                    setUser(res.data.message)
+                    console.log(res.data.message)
                 })
                 .catch((err) => { console.log(err) })
         }
+        const fetchTransactions = async () => {
+            await Axios
+                .get("http://localhost:5000/order/name/" + authUser.username)
+                .then((res) => { setTransactions(res) })
+                .catch((err) => { console.log(err) })
+        }
+        console.log(authUser)
         fetchData()
+        // fetchTransactions()
     }, [])
-    
+
     if (user === null) {
         return (<div></div>)
     }
+
+    
 
     return (
         <div style={{ paddingBottom: 50 }}>
@@ -41,7 +83,7 @@ export const Account = () => {
                                     <FontAwesomeIcon icon={faDotCircle} className="icon" />
                                     Thông tin tài khoản
                                 </Link>
-                                <Link to="/" className="link" onClick={() => {localStorage.removeItem("myUser"); setAuthUser(null)}}>
+                                <Link to="/" className="link" onClick={() => { localStorage.removeItem("myUser"); setAuthUser(null) }}>
                                     <FontAwesomeIcon icon={faDotCircle} className="icon" />
                                     Đăng xuất
                                 </Link>
@@ -75,38 +117,11 @@ export const Account = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td className="order_id text-center">
-                                                    <Link to="/account/orders/123123" className="transactionId">
-                                                        #123123
-                                                    </Link>
-                                                </td>
-                                                <td className="date text-center">
-                                                    <span>10/11/2020</span>
-                                                </td>
-                                                <td className="total text-right">
-                                                    <span>1,700,500d</span>
-                                                </td>
-                                                <td className="status text-center">
-                                                    <span>Chua xu ly</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="order_id text-center">
-                                                    <Link to="/account" className="transactionId">
-                                                        #123123
-                                                    </Link>
-                                                </td>
-                                                <td className="date text-center">
-                                                    <span>10/11/2020</span>
-                                                </td>
-                                                <td className="total text-right">
-                                                    <span>1,700,500d</span>
-                                                </td>
-                                                <td className="status text-center">
-                                                    <span>Chua xu ly</span>
-                                                </td>
-                                            </tr>
+                                            {
+                                                transactions !== null
+                                                ? transactions.map((item) => <Item product={item}/>)
+                                                : <div></div>
+                                            }
                                         </tbody>
                                     </Table>
                                 </div>

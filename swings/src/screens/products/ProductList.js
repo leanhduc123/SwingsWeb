@@ -2,83 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Container, Row } from 'react-bootstrap'
 import { Card } from "../card/Card"
 import "../../css/productList.css"
+import Axios from 'axios'
 
-const product = [{
-    name: "Áo khoác",
-    productId: "123123123",
-    price: 650000,
-    img: [
-        "http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg",
-        "http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg"
-    ],
-    size: ["M", "L", "XL", "XLL"],
-    discount: 50,
-    description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
-    rating: [
-        {username: "duc", score: 3},
-        {username: "linh", score: 4},
-        {username: "hoang", score: 1},
-        {username: "kien", score: 5},
-        {username: "thai", score: 3},
-    ]
-},{
-    name: "Quần bò",
-    productId: "3234234",
-    price: 340000,
-    img: [
-        "http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg",
-        "http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg"
-    ],
-    size: ["M", "L", "XL", "XLL"],
-    discount: 0,
-    description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
-    rating: [
-        {username: "duc", score: 3},
-        {username: "linh", score: 2},
-        {username: "hoang", score: 1},
-        {username: "kien", score: 2},
-        {username: "thai", score: 3},
-    ]
-},{
-    name: "Áo khoác",
-    productId: "2342342",
-    price: 280000,
-    img: [
-        "http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg",
-        "http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg"
-    ],
-    size: ["M", "L", "XL", "XLL"],
-    discount: 50,
-    description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
-    rating: [
-        {username: "duc", score: 5},
-        {username: "linh", score: 5},
-        {username: "hoang", score: 4},
-        {username: "kien", score: 5},
-        {username: "thai", score: 3},
-    ]
-},{
-    name: "Áo khoác",
-    productId: "2351512",
-    price: 780000,
-    img: [
-        "http://product.hstatic.net/200000201725/product/_nik6857_3aaee08f035c41399c4792651fceac49_grande.jpg",
-        "http://product.hstatic.net/200000201725/product/_nik6846_3ca2e02df9484c528f6f465bb07081d8_grande.jpg"
-    ],
-    size: ["M", "L", "XL", "XLL"],
-    discount: 50,
-    description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
-    rating: [
-        {username: "duc", score: 5},
-        {username: "linh", score: 3},
-        {username: "hoang", score: 3},
-        {username: "kien", score: 2},
-        {username: "thai", score: 3},
-    ]
-}]
+const category = ["ao", "quan", "balo-tui-xach", "giay-dep", "phu-kien"]
+
 export const ProductList = ( props ) => {
     const [ selectedOption, setSelectedOption ] = useState("san_pham_noi_bat")
-    const [ productList, setProductList ] = useState(product)
+    const [ productList, setProductList ] = useState(null)
+    const [ product, setProduct] = useState(null)
     const { type, link } = props
     console.log(type + " " + link) 
     const sortList = (value) => {
@@ -103,6 +34,39 @@ export const ProductList = ( props ) => {
     useEffect(() => {
         console.log(selectedOption)
     }, [selectedOption])
+
+    useEffect(() => {
+        const fetchData = async (cate) => {
+            return Axios.get("http://localhost:5000/products/" + cate + "/" + link)
+            .then((res) => { 
+                setProductList(res.data.message)
+                setProduct(res.data.message)
+            })
+            .catch((err) => {console.log(err)})
+        }
+        const fecthAllData = async () => {
+            return Axios.get("http://localhost:5000/products/allProduct")
+            .then((res) => { 
+                var data = res.data.message
+                var arr = []
+                for (var i = 0; i < data.length; i++){
+                    if (data[i].discount === "50"){
+                        arr.push(data[i])
+                    }
+                }
+                setProductList(arr)
+                setProduct(arr)
+            })
+            .catch((err) => {console.log(err)})
+        }
+        if (category.find(item => item === link)){
+            fetchData("category")
+        } else if (link === "sale-50"){
+            fecthAllData()
+        } else {
+            fetchData("subCategory")
+        }
+    },[])
 
     return (
         <div>
@@ -129,9 +93,10 @@ export const ProductList = ( props ) => {
 
             <Container>
                 <Row>
-                    {/* {
-                        productList.map(item => <Card product={item} />)
-                    } */}
+                    { (productList !== null) 
+                       ? productList.map(item => <Card product={item} />)
+                       : <div></div>
+                    }
                 </Row>
             </Container>
         </div>

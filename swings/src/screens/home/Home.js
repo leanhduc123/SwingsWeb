@@ -19,7 +19,6 @@ import { Custom } from '../user/Custom'
 import { Search } from '../products/Search'
 import { useContext } from 'react'
 import { AuthUserCtx } from '../../context/authUser'
-import Axios from 'axios'
 import { Homapage } from './Homapage'
 
 
@@ -65,31 +64,31 @@ export const Home = () => {
         }
     }, [])
     const linkList =
-        [{ type: "SALE OFF 50%", link: "/collections/sale-50" },
-        { type: "ÁO", link: "/collections/ao" },
-        { type: "ÁO SƠ MI", link: "/collections/ao-so-mi" },
-        { type: "ÁO THUN", link: "/collections/ao-thun" },
-        { type: "ÁO POLO", link: "/collections/ao-polo" },
-        { type: "ÁO VEST", link: "/collections/ao-vest" },
-        { type: "QUẦN", link: "/collections/quan/" },
-        { type: "QUẦN JEANS", link: "/collections/quan-jeans" },
-        { type: "QUẦN DÀI", link: "/collections/quan-dai" },
-        { type: "QUẦN TÂY", link: "/collections/quan-tay" },
-        { type: "QUẦN SHORT", link: "/collections/quan-short" },
-        { type: "QUẦN KAKI", link: "/collections/quan-kaki" },
-        { type: "BALO-TÚI XÁCH", link: "/collections/balo-tui-xach" },
-        { type: "GIÀY DÉP", link: "/collections/giay-dep" },
-        { type: "GIẦY DA", link: "/collections/giay-da" },
-        { type: "PHỤ KIỆN KHÁC", link: "/collections/phu-kien" },
-        { type: "UNDERWEAR", link: "/collections/underwear" },
-        { type: "VỚ", link: "/collections/vo" },
-        { type: "THẮT LƯNG", link: "/collections/that-lung" },
-        { type: "VÍ", link: "/collections/vi" },
-        { type: "ÁO KHOÁC", link: "/collections/ao-khoac" },
-        { type: "ÁO KHOÁC BÒ", link: "/collections/ao-khoac-bo" },
-        { type: "ÁO NỈ", link: "/collections/ao-ni" },
-        { type: "ÁO HOODIE", link: "/collections/ao-hoodie" },
-        { type: "ÁO KHOÁC DA", link: "/collections/ao-khoac-da" }
+        [{ type: "SALE OFF 50%", link: "sale-50" },
+        { type: "ÁO", link: "ao" },
+        { type: "ÁO SƠ MI", link: "ao-so-mi" },
+        { type: "ÁO THUN", link: "ao-thun" },
+        { type: "ÁO POLO", link: "ao-polo" },
+        { type: "ÁO VEST", link: "ao-vest" },
+        { type: "QUẦN", link: "quan" },
+        { type: "QUẦN JEANS", link: "quan-jeans" },
+        { type: "QUẦN DÀI", link: "quan-dai" },
+        { type: "QUẦN TÂY", link: "quan-tay" },
+        { type: "QUẦN SHORT", link: "quan-short" },
+        { type: "QUẦN KAKI", link: "quan-kaki" },
+        { type: "BALO-TÚI XÁCH", link: "balo-tui-xach" },
+        { type: "GIÀY DÉP", link: "giay-dep" },
+        { type: "GIẦY DA", link: "giay-da" },
+        { type: "PHỤ KIỆN KHÁC", link: "phu-kien" },
+        { type: "UNDERWEAR", link: "underwear" },
+        { type: "VỚ", link: "vo" },
+        { type: "THẮT LƯNG", link: "that-lung" },
+        { type: "VÍ", link: "vi" },
+        { type: "ÁO KHOÁC", link: "ao-khoac" },
+        { type: "ÁO KHOÁC BÒ", link: "ao-khoac-bo" },
+        { type: "ÁO NỈ", link: "ao-ni" },
+        { type: "ÁO HOODIE", link: "ao-hoodie" },
+        { type: "ÁO KHOÁC DA", link: "ao-khoac-da" }
         ];
     const list = [{
         type: "SẢN PHẨM",
@@ -192,7 +191,7 @@ export const Home = () => {
                 <Route path='/comments' component={Comment} />
                 {
                     linkList.map(item => {
-                        return <Route path={item.link} render={() => (
+                        return <Route path={"/collections/" + item.link} render={() => (
                             <ProductList type={item.type} link={item.link} />
                         )} />
                     })
@@ -201,7 +200,7 @@ export const Home = () => {
                 <Route path="/collections">
                     <Redirect from="/collections" to="/" />
                 </Route>
-                <Route path="/search" component={Search} />
+                <Route path="/search/:p" component={Search} />
                 <Route path="/login" component={Login} />
                 <Route path="/comment" component={Comment} />
                 <Route path="/register" exact component={Register} />

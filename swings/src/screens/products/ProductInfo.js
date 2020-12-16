@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Col, Container, Modal, Row } from 'react-bootstrap';
 import "../../css/productInfo.css"
 import { Carousel } from "react-responsive-carousel";
@@ -7,6 +7,7 @@ import ReactStars from "react-rating-stars-component";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Axios from 'axios'
+import { AuthUserCtx } from '../../context/authUser';
 
 const sizeList = ['s', 'm', 'l', 'xl', 'xll'];
 const hdList = [
@@ -38,6 +39,7 @@ const countStar = (rating) => {
 }
 
 export const ProductInfo = ({ match }) => {
+    const { authUser } = useContext(AuthUserCtx)
     const [product, setProduct] = useState(null)
     const [quantity, setQuantity] = useState(1);
     const [size, setSize] = useState(null);
@@ -46,12 +48,13 @@ export const ProductInfo = ({ match }) => {
 
     const [show, setShow] = useState(false);
     const [alert, setAlert] = useState(false);
-
+    console.log(match.params.productId)
     useEffect(() => {
         const fetchData = async () => {
             await Axios
                 .get("http://localhost:5000/products/" + match.params.productId)
                 .then((res) => {
+                    console.log(res.data.message)
                     setProduct(res.data.message)
                     setSize(res.data.message.size[0].toLowerCase())
                     setStar(countStar(res.data.message.rating))
@@ -67,6 +70,15 @@ export const ProductInfo = ({ match }) => {
         target.className += "sd";
         setSize(target.innerText.toLowerCase())
     }
+
+    useEffect(() => {
+        if (authUser !== null && product !== null) {
+            var index = product.rating.find(item => item.username === authUser.username)
+            if (index) {
+                setStar(product.rating[index].score)
+            }
+        }
+    },[authUser, product])
 
 
     const update = () => {
@@ -106,8 +118,27 @@ export const ProductInfo = ({ match }) => {
         setImg(target.img)
     }
 
+    const updateRating = async(rating) => {
+        return Axios.post("http://localhost:5000/products/" + product._id + "/rating", rating)
+        .then((res) => {console.log(res)})
+        .catch((err) => {console.log(err)})
+    }
+
     const ratingChanged = (newRating) => {
         setStar(newRating)
+        if (authUser !== null) {
+            var rating = product.rating
+            var index = rating.find(item => item.username === authUser.username)
+            if (index) {
+                rating[index].score = newRating
+            } else {
+                rating.push({
+                    username: authUser.username,
+                    score: newRating
+                })
+            }
+            updateRating(rating)
+        }
     };
 
     if (product === null) {
