@@ -10,8 +10,11 @@ router.post('/order', async (req, res, next) => {
     const order = new Order({
         id: new mongoose.Types.ObjectId(),
         user: req.body.user,
+        phone: req.body.user,
+        address: req.body.address,
         order: req.body.order,
-        total: req.body.total
+        total: req.body.total,
+        isOrderCompleted: true
     });
     await order.save()
     .then(order => {
@@ -66,27 +69,20 @@ router.delete("/:id", async (req, res) => {
   });
 
 router.put('/:id', (req, res, next) => {
-    const userId = req.body.userId;
-    const order = req.body.orer;
-    const quantity = req.body.quantity;
-    const total = req.body.total;
-    Order.update({"user": userId, "order.product": productId}, {
-        $set : {
-            "oder.$.quantity": quantity,
-            "order.$.total": total
-        }
-    })
-    .exec()
-    .then(order => {
+    const orderId = req.params.id
+    const orders = Order.findById({_id:orderId})
+    if (orders){
+        orders.order = req.body.order;
+        orders.address = req.body.address
+        const updateOrders = await Order.save()
         res.status(201).json({
-            message: order
-        });
-    })
-    .catch(error => {
-        res.status(500).json({
-            error: error
-        });
-    });
+            message: updateOrders
+        })
+    } else {
+        res.status(201).json({
+            message: 'Not Found'
+        })
+    }
 
 });
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const productSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     name: { 
@@ -26,13 +27,19 @@ const productSchema = mongoose.Schema({
             _id: mongoose.Schema.Types.ObjectId,
             userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
             score: String,
-            createdAt: Date
+            createdAt: {
+                type: Date,
+                default: Date.now()
+            }
         }
     ],
     //keyword: {type: String},
     category: { 
         type: String, 
         required: true  
+    },
+    subCategory: {
+        type: String,
     },
     createdAt: { 
         type: Date, 

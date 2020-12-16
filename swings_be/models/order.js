@@ -3,8 +3,18 @@ const mongoose = require('mongoose');
 const orderSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     user: { 
+<<<<<<< HEAD
         type: String,
+=======
+        type: mongoose.Schema.Types.ObjectId,
+>>>>>>> 31379046d299bc0822ad129d819fd1d7cf01c678
         required: true 
+    },
+    phone: {
+        type: String,
+    },
+    address:{
+        type: String
     },
     order: [
         {

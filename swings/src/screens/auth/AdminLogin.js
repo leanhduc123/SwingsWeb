@@ -1,10 +1,31 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "../../css/adminlogin.css"
 import { Container } from 'react-bootstrap';
+import { AuthAdminCtx } from '../../context/authAdmin';
+import axios from "axios";
+
+const setWithExpiry = (key, obj, ttl) => {
+  const now = new Date()
+  const item = {
+    user: obj,
+    expiry: now.getTime() + ttl,
+  }
+  localStorage.setItem(key, JSON.stringify(item))
+}
 
 export const AdminLogin = () => {
+  const { authAdmin, setAuthAdmin } = useState(AuthAdminCtx)
+  const [isError, setError ] = useState(false)
+  const [show, setShow] = useState(false);
+  const [login, setLogin] = useState(false);
+  const [registing, setRegisting] = useState(false)
+
+  useEffect(() => {
+    console.log("prepare login: " + authAdmin)
+  }, [authAdmin])
+
   const initialValues_ = {
     username: "",
     password: "",
@@ -18,12 +39,35 @@ export const AdminLogin = () => {
       .min(6, "Password's length must be greater than 6!")
       .required("Password is required!"),
   });
-  const onSubmit_ = (value) => {
-    console.log(value);
+
+  const onSubmit_ = (values) => {
+    setLogin(true);
+    axios
+      .post("http://localhost:5000/admin/login", {
+        username: values.username,
+        password: values.password,
+      })
+      .then((res) => {
+        console.log(res.data)
+        setAuthAdmin(res.data.user);
+        
+        setWithExpiry("myUser", {username: res.data.message.user.username, userId: res.data.message.user.userId}, 100000)
+        setRegisting(true)
+      })
+      .catch((err) => {
+        console.log(err)
+        setError(true)
+        setShow(true)
+      })
+      .finally(() => {
+        setLogin(false)
+      });
   };
-  // function onClick_Login() {
-  //   console.log("Clicked to Login!");
-  // }
+  function onClick_Login() {
+    console.log("Clicked to Login!");
+    setAuthAdmin("hello")
+    console.log("Click login" + authAdmin)
+  }
   return (
     <Formik
       initialValues={initialValues_}

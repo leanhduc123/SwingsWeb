@@ -127,7 +127,7 @@ export const Login = () => {
                   </button>
               </div>
 
-              <a href="/register" onClick={onClick_Login}>
+              <a href="/register" >
                 Not have an account yet? Register
                 </a>
             </Form>

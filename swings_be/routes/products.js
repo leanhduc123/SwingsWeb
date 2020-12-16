@@ -2,11 +2,37 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Product = require('../models/product');
+const { route } = require('./admins');
 //const Category = require('../models/category');
+var count_rate = 0;
 
-
+router.get('/catergory/:category', async (req, res, next) =>{
+    const catergory = req.params.category;
+    const products = Product.findOne({catergory: catergory})
+    if (products) {
+        res.status(201).json({
+            message: products
+        })
+    } else {
+        res.status(404).json({
+            message: 'Not found'
+        })
+    }
+})
+router.get('/subCatergory/:subCategory', async (req, res, next) =>{
+    const subcCatergory = req.params.subcategory;
+    const products = Product.findOne({subCatergory: Catergory})
+    if (products) {
+        res.status(201).json({
+            message: products
+        })
+    } else {
+        res.status(404).json({
+            message: 'Not found'
+        })
+    }
+})
 router.get('/', async (req, res,next) => {
-    const category = req.query.category ? { category: req.query.category } : {};
     const searchKeyword = req.query.searchKeyword
       ? {
           name: {
@@ -20,7 +46,7 @@ router.get('/', async (req, res,next) => {
     //     ? { price: 1 }
     //     : { price: -1 }
     //   : { _id: -1 };
-    const products = Product.find({ ...category, ...searchKeyword })
+    const products = Product.find({...searchKeyword })
     //.sort(sortOrder);
     res.status(201).json({
         message: products
@@ -42,7 +68,6 @@ router.get('/allProduct', async (req, res, next) => {
 })
 
   
-
 router.post('/addProduct', async (req, res, next) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(), 
@@ -51,7 +76,8 @@ router.post('/addProduct', async (req, res, next) => {
         description: req.body.description,
         image: req.body.image,
         discount: req.body.discount,
-        category: req.body.category
+        category: req.body.category,
+        subCategory: req.body.subCategory
         //createdBy: req.body.createdBy
     });
     await product.save()
@@ -71,12 +97,14 @@ router.put('/:id',  async (req, res, next) =>{
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
-      product.name = req.body.name;
-      product.price = req.body.price;
-      product.image = req.body.image;
-      product.category = req.body.category;
-      product.description = req.body.description;
+      product.name = req.body.name
+      product.price = req.body.price
+      product.image = req.body.image
+      product.category = req.body.category
+      product.description = req.body.description
       product.discount = req.body.discount
+      product.subCategory = req.body.subCategory
+      product.updatedAt = Date.now()
       const updatedProduct = await product.save();
       res.status(201).json({ 
           message: updatedProduct 
@@ -89,7 +117,20 @@ router.put('/:id',  async (req, res, next) =>{
 
 })
 
-
+router.post('/:id/rating', async(req, res) => {
+    const product = await Product.findById(req.params.id)
+    if (product) {
+        product.rating = req.body.rating
+        const updatedProduct = await product.save()
+        res.status(201).json({
+            message: updatedProduct
+        })
+    } else {
+        res.status(500).json({
+            message: 'Not Found'
+        })
+    }
+})
 
 router.get('/:id',async (req, res, next) => {
     const product = await Product.findOne({_id:req.params.id})
@@ -103,6 +144,7 @@ router.get('/:id',async (req, res, next) => {
         });
     }
 })
+
 router.delete('/:id',  async (req, res, next) => {
     const deletedProduct = await Product.findById(req.params.id);
     if (deletedProduct) { 
