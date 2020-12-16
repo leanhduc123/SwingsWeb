@@ -2,10 +2,6 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Order = require('../models/order');
-//const CartItem = require('../models/cartItem');
-//const Profile = require('../models/profile');
-
-
 router.post('/order', async (req, res, next) => {
     const order = new Order({
         id: new mongoose.Types.ObjectId(),

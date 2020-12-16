@@ -46,21 +46,12 @@ const productSchema = mongoose.Schema({
             }
         }
     ],
-    //keyword: {type: String},
     createdAt: { 
         type: Date, 
         default: Date.now 
     },
-    // createdBy: { 
-    //     type: mongoose.Schema.Types.ObjectId, 
-    //     ref: 'Admin' 
-    // },
     updatedAt: Date 
-    
-    // updatedBy: { 
-    //     type: mongoose.Schema.Types.ObjectId, 
-    //     ref: 'Admin'
-    // }
+
 });
 
 module.exports = mongoose.model('Product', productSchema);

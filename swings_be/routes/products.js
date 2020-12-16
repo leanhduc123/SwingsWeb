@@ -39,13 +39,7 @@ router.get('/:name', async (req, res,next) => {
           },
         }
       : {};
-    // const sortOrder = req.query.sortOrder
-    //   ? req.query.sortOrder === 'lowest'
-    //     ? { price: 1 }
-    //     : { price: -1 }
-    //   : { _id: -1 };
     const products = await Product.find({...searchKeyword })
-    //.sort(sortOrder);
     res.status(201).json({
         message: products
     })
@@ -65,7 +59,6 @@ router.get('/allProduct', async (req, res, next) => {
     }
 })
 
-  
 router.post('/addProduct', async (req, res, next) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(), 
@@ -77,7 +70,6 @@ router.post('/addProduct', async (req, res, next) => {
         category: req.body.category,
         subcategory: req.body.subcategory,
         size: req.body.size
-        //createdBy: req.body.createdBy
     });
     await product.save()
     .then(product => {
@@ -132,8 +124,10 @@ router.post('/:id/rating', async(req, res) => {
     }
 })
 
-router.get('/:id',async (req, res, next) => {
-    const product = await Product.findOne({_id:req.params.id})
+router.get('/product/:id',async (req, res, next) => {
+    const id = req.params.id
+    const product = await Product.findById({_id: id})
+    console.log(req.params.id)
     if (product) {
         res.status(200).json({
             message: product
