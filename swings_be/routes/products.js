@@ -3,8 +3,6 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Product = require('../models/product');
 const { route } = require('./admins');
-//const Category = require('../models/category');
-var count_rate = 0;
 
 router.get('/category/:category', async (req, res, next) =>{
     const category = req.params.category;
