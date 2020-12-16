@@ -52,8 +52,8 @@ export const Account = () => {
                     <Col md={9}>
                         <div className="customer-sidebar">
                             <h3 className="title-detail">Thông tin tài khoản</h3>
-                            <h2 className="fullName">lê đức</h2>
-                            <p>username: {user.name}</p>
+                            <h2 className="fullName">{user.name}</h2>
+                            <p>username: {user.username}</p>
                             <p>email: {user.email}</p>
                             <p>số điện thoại: {user.phone}</p>
                             <p>địa chỉ: {user.address}</p>
