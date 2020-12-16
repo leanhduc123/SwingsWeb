@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({
 
 // parse application/json
 app.use(bodyParser.json())
-
+//abc
 app.use('/admin', adminRoutes);
 app.use('/', userRoutes); 
 app.use('/products', productRoutes);
