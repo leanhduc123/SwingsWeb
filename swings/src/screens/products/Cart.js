@@ -190,7 +190,7 @@ export const Cart = () => {
             email: email,
             phone: phone,
             address: address,
-            order: [],
+            order: order,
             total: total
         }
         postOrder(orderSchema)
