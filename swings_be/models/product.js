@@ -6,6 +6,13 @@ const productSchema = mongoose.Schema({
         type: String, 
         required: true 
     },
+    category: { 
+        type: String, 
+        required: true  
+    },
+    subCategory: {
+        type: String,
+    },
     price: { 
         type: Number, 
         required: true 
@@ -22,6 +29,12 @@ const productSchema = mongoose.Schema({
     discount: {
         type: String,
     },
+    size: [{
+        size: {
+            type: String,
+            required: true
+        }
+    }],
     rating: [
         {
             _id: mongoose.Schema.Types.ObjectId,
@@ -34,13 +47,6 @@ const productSchema = mongoose.Schema({
         }
     ],
     //keyword: {type: String},
-    category: { 
-        type: String, 
-        required: true  
-    },
-    subCategory: {
-        type: String,
-    },
     createdAt: { 
         type: Date, 
         default: Date.now 

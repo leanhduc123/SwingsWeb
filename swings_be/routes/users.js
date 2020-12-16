@@ -66,7 +66,7 @@ router.post('/login', (req, res, next) => {
                     if(result){
                         const payload = {
                             userId: user._id,
-                            username: user.name, 
+                            username: user.username, 
                             iat:  Math.floor(Date.now() / 1000) - 30,
                             exp: Math.floor(Date.now() / 1000) + (60 * 60 * 60 * 24),
                         }

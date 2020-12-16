@@ -6,9 +6,9 @@ const { route } = require('./admins');
 //const Category = require('../models/category');
 var count_rate = 0;
 
-router.get('/catergory/:category', async (req, res, next) =>{
-    const catergory = req.params.category;
-    const products = Product.findOne({catergory: catergory})
+router.get('/category/:category', async (req, res, next) =>{
+    const category = req.params.category;
+    const products = Product.findOne({category: category})
     if (products) {
         res.status(201).json({
             message: products
@@ -19,9 +19,9 @@ router.get('/catergory/:category', async (req, res, next) =>{
         })
     }
 })
-router.get('/subCatergory/:subCategory', async (req, res, next) =>{
-    const subcCatergory = req.params.subcategory;
-    const products = Product.findOne({subCatergory: Catergory})
+router.get('/subCategory/:subCategory', async (req, res, next) =>{
+    const subCategory = req.params.subcategory;
+    const products = Product.findOne({subCategory: subCategory})
     if (products) {
         res.status(201).json({
             message: products
@@ -77,7 +77,8 @@ router.post('/addProduct', async (req, res, next) => {
         image: req.body.image,
         discount: req.body.discount,
         category: req.body.category,
-        subCategory: req.body.subCategory
+        subCategory: req.body.subCategory,
+        size: req.body.size
         //createdBy: req.body.createdBy
     });
     await product.save()
@@ -104,6 +105,7 @@ router.put('/:id',  async (req, res, next) =>{
       product.description = req.body.description
       product.discount = req.body.discount
       product.subCategory = req.body.subCategory
+      product.size = req.body.size
       product.updatedAt = Date.now()
       const updatedProduct = await product.save();
       res.status(201).json({ 
