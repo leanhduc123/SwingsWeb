@@ -8,7 +8,7 @@ var count_rate = 0;
 
 router.get('/category/:category', async (req, res, next) =>{
     const category = req.params.category;
-    const products = Product.findOne({category: category})
+    const products = Product.find({category: category})
     if (products) {
         res.status(201).json({
             message: products
