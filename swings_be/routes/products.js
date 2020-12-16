@@ -8,7 +8,7 @@ var count_rate = 0;
 
 router.get('/category/:category', async (req, res, next) =>{
     const category = req.params.category;
-    const products = Product.find({category: category})
+    const products = await Product.find({category:category})
     if (products) {
         res.status(201).json({
             message: products
@@ -19,9 +19,9 @@ router.get('/category/:category', async (req, res, next) =>{
         })
     }
 })
-router.get('/subCategory/:subCategory', async (req, res, next) =>{
-    const subCategory = req.params.subcategory;
-    const products = Product.findOne({subCategory: subCategory})
+router.get('/subcategory/:subcategory', async (req, res, next) =>{
+    const subcategory = req.params.subcategory;
+    const products = await Product.find({subcategory: subcategory})
     if (products) {
         res.status(201).json({
             message: products
@@ -77,7 +77,7 @@ router.post('/addProduct', async (req, res, next) => {
         image: req.body.image,
         discount: req.body.discount,
         category: req.body.category,
-        subCategory: req.body.subCategory,
+        subcategory: req.body.subcategory,
         size: req.body.size
         //createdBy: req.body.createdBy
     });
@@ -104,7 +104,7 @@ router.put('/:id',  async (req, res, next) =>{
       product.category = req.body.category
       product.description = req.body.description
       product.discount = req.body.discount
-      product.subCategory = req.body.subCategory
+      product.subcategory = req.body.subcategory
       product.size = req.body.size
       product.updatedAt = Date.now()
       const updatedProduct = await product.save();
