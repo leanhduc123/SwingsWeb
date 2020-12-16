@@ -187,6 +187,9 @@ export const Cart = () => {
         localStorage.setItem('total', 0)
         var orderSchema = {
             user: username,
+            email: email,
+            phone: phone,
+            address: address,
             order: order,
             total: total
         }

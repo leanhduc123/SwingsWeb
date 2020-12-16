@@ -15,7 +15,7 @@ router.post('/order', async (req, res, next) => {
         email: req.body.email,
         order: req.body.order,
         total: req.body.total,
-        isOrderCompleted: true
+        isOrderCompleted: false
     });
     await order.save()
     .then(order => {
