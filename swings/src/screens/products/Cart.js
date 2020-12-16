@@ -5,6 +5,8 @@ import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStore } from '@fortawesome/free-solid-svg-icons';
 import { AuthUserCtx } from '../../context/authUser';
+import Axios from 'axios';
+import { Email } from '@material-ui/icons';
 
 const Item = (props) => {
     // const [name, setName] = useState(props.name);
@@ -97,6 +99,14 @@ const Item = (props) => {
 }
 
 export const Cart = () => {
+    const [order, setOrder] = useState(null)
+    const { authUser, setAuthUser } = useContext(AuthUserCtx)
+    const [user, setUser] = useState(null)
+    const [fullname, setFullname] = useState("")
+    const [address, setAddress] = useState("")
+    const [phone, setPhone] = useState("")
+    const [email, setEmail] = useState("")
+    const [username, setUsername] = useState("Khách hàng")
     const calculate = (products) => {
         var total = 0
         var item
@@ -107,6 +117,29 @@ export const Cart = () => {
         }
         return total
     }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await Axios
+                .get("http://localhost:5000/" + authUser.userId)
+                .then((res) => {
+                    var obj = res.data.message
+                    setUser(obj)
+                    setUsername(obj.username)
+                    setFullname(obj.name)
+                    setAddress(obj.address)
+                    setEmail(obj.email)
+                    setPhone(obj.phone)
+                })
+                .catch((err) => { console.log(err) })
+        }
+        if (authUser !== null){
+            fetchData()
+        }
+        if (authUser !== null) {
+            setUsername(authUser.username)
+        }
+    }, [authUser])
     const [show, setShow] = useState(false);
     const [products, setProducts] = useState(localStorage.getObj("cart") === null ? [] : localStorage.getObj("cart"))
     const [total, setTotal] = useState(calculate(products))
@@ -117,8 +150,49 @@ export const Cart = () => {
             setEmpty(true)
         } else {
             setShow(true)
+            var items = localStorage.getObj("cart")
+            console.log(items)
+            var arr = []
+            var index
+            for (index of items) {
+                console.log(index)
+                arr.push({
+                    product: index.id,
+                    price: index.price,
+                    quantity: index.quantity,
+                    size: index.size.toUpperCase()
+                })
+            }
+            setOrder(arr)
         }
     }
+
+    if (authUser !== null && user === null) {
+        return (<div></div>)
+    }
+
+    const postOrder = async (order) => {
+        return Axios.post("http://localhost:5000/order/order", order)
+        .then((res) => {console.log(res.data.message)})
+        .catch((err) => {console.log(err)})
+    }
+
+    const onSubmit_ = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        localStorage.setObj("cart", [])
+        localStorage.setItem('total', 0)
+        var orderSchema = {
+            user: username,
+            order: order,
+            total: total
+        }
+        postOrder(order)
+    }
+
 
     return (
         <Container>
@@ -132,26 +206,26 @@ export const Cart = () => {
                     <h3>Thông tin đơn hàng</h3>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form>
+                    <Form onSubmit={onSubmit_}>
                         <Form.Group controlId="userName">
                             <Form.Label>Username</Form.Label>
-                            <Form.Control type="text" placeholder="" />
+                            <Form.Control type="text" placeholder="" defaultValue="Khách hàng" value={username} disabled />
                         </Form.Group>
                         <Form.Group controlId="fullName">
                             <Form.Label>Họ tên</Form.Label>
-                            <Form.Control type="text" placeholder="Nhập họ tên người mua" />
+                            <Form.Control type="text" placeholder="Nhập họ tên người mua" defaultValue={fullname}/>
                         </Form.Group>
                         <Form.Group controlId="email">
                             <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" placeholder="Nhập email" />
+                            <Form.Control type="email" placeholder="Nhập email" defaultValue={email}/>
                         </Form.Group>
                         <Form.Group controlId="phoneNumber">
                             <Form.Label>Số điện thoại</Form.Label>
-                            <Form.Control type="text" placeholder="Nhập số điện thoại" />
+                            <Form.Control type="text" placeholder="Nhập số điện thoại" defaultValue={phone}/>
                         </Form.Group>
                         <Form.Group controlId="address">
                             <Form.Label>Địa chỉ</Form.Label>
-                            <Form.Control type="text" placeholder="Nhập địa chỉ" />
+                            <Form.Control type="text" placeholder="Nhập địa chỉ" defaultValue={address}/>
                         </Form.Group>
                         <Button variant="secondary" type="submit">
                             Gửi đơn hàng

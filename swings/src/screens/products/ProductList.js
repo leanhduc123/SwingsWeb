@@ -129,9 +129,9 @@ export const ProductList = ( props ) => {
 
             <Container>
                 <Row>
-                    {
+                    {/* {
                         productList.map(item => <Card product={item} />)
-                    }
+                    } */}
                 </Row>
             </Container>
         </div>

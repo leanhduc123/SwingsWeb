@@ -1,8 +1,8 @@
-import React, { useEffect} from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
 import { Card } from "../card/Card"
 import '../../css/nav.css'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import { Cart } from '../products/Cart'
 import { ProductInfo } from '../products/ProductInfo'
 import { ProductList } from '../products/ProductList'
@@ -20,25 +20,26 @@ import { Search } from '../products/Search'
 import { useContext } from 'react'
 import { AuthUserCtx } from '../../context/authUser'
 import Axios from 'axios'
+import { Homapage } from './Homapage'
 
 
 const getWithExpiry = (key) => {
     const itemStr = localStorage.getItem(key)
-  
+
     // if the item doesn't exist, return null
     if (!itemStr) {
-      return null
+        return null
     }
-  
+
     const item = JSON.parse(itemStr)
     const now = new Date()
-  
+
     // compare the expiry time of the item with the current time
     if (now.getTime() > item.expiry) {
-      // If the item is expired, delete the item from storage
-      // and return null
-      localStorage.removeItem(key)
-      return null
+        // If the item is expired, delete the item from storage
+        // and return null
+        localStorage.removeItem(key)
+        return null
     }
     return item.user
 }
@@ -46,8 +47,8 @@ const getWithExpiry = (key) => {
 const setWithExpiry = (key, obj, ttl) => {
     const now = new Date()
     const item = {
-      user: obj,
-      expiry: now.getTime() + ttl,
+        user: obj,
+        expiry: now.getTime() + ttl,
     }
     localStorage.setItem(key, JSON.stringify(item))
 }
@@ -64,11 +65,11 @@ const product = [{
     discount: 50,
     description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
     rating: [
-        {username: "duc", score: 3},
-        {username: "linh", score: 2},
-        {username: "hoang", score: 1},
-        {username: "kien", score: 5},
-        {username: "thai", score: 3},
+        { username: "duc", score: 3 },
+        { username: "linh", score: 2 },
+        { username: "hoang", score: 1 },
+        { username: "kien", score: 5 },
+        { username: "thai", score: 3 },
     ]
 }, {
     name: "Áo khoác",
@@ -82,91 +83,93 @@ const product = [{
     discount: 0,
     description: "day la mot san pham tot co kha nngsdc dcs dsc sdf sdfs sxas ewwe sdcsd asda qweq asa",
     rating: [
-        {username: "duc", score: 3},
-        {username: "linh", score: 2},
-        {username: "hoang", score: 1},
-        {username: "kien", score: 5},
-        {username: "thai", score: 3},
+        { username: "duc", score: 3 },
+        { username: "linh", score: 2 },
+        { username: "hoang", score: 1 },
+        { username: "kien", score: 5 },
+        { username: "thai", score: 3 },
     ]
 }]
 
-const home = () => {
+// const home = () => {
+//     const fetchData = async () => {
+//         Axios
+//             .get("http://localhost:5000/products/allProduct")
+//             .then((res) => {
+//                 setProducts(res.data.message)
+//                 var newArr = []
+//                 var saleArr = []
+//                 for (var i = products.length - 1; i > products.length - 9; i--) {
+//                     newArr.push(products[i])
+//                 }
+//                 setNewArrival(newArr)
+//                 var index = 0;
+//                 for (var i = 0; i < products.length; i++){
+//                     if (index === 8) {
+//                         break
+//                     }
+//                     if (products[i].discount === "50"){
+//                         saleArr.push(products[i])
+//                     }
+//                     i += 1
+//                 }
+//                 setSale(saleArr)
+//             })
+//             .catch((err) => { console.log(err) })
+//     }
 
-    return (
-        <div>
-            <Row>
-                <img className="carosel" src="http://theme.hstatic.net/200000201725/1000627199/14/slideshow_1.png?v=301" alt="Thời trang nam" />
-            </Row>
+//     useEffect(() => {
+//         fetchData()
+//     }, [])
 
-            <Row className="titl">
-                <a href="/collections/new-arrival">NEW ARRIVAL</a>
-            </Row>
+//     if (products === null || newArrival === null || sale === null) {
+//         return (<div></div>)
+//     }
 
-            <Container>
-                <Row>
-                    <Card product={product[1]} />
-                    <Card product={product[1]} />
-                    <Card product={product[1]} />
-                    <Card product={product[1]} />
-                    <Card product={product[1]} />
-                    <Card product={product[1]} />
-                    <Card product={product[1]} />
-                    <Card product={product[1]} />
-                </Row>
-            </Container>
+//     return (
+//         <div>
+//             <Row>
+//                 <img className="carosel" src="http://theme.hstatic.net/200000201725/1000627199/14/slideshow_1.png?v=301" alt="Thời trang nam" />
+//             </Row>
 
-            <Row className="titl">
-                <a href="/collections/sale-50">SALE UP TO 50%</a>
-            </Row>
+//             <Row className="titl">
+//                 <a href="/collections/new-arrival">NEW ARRIVAL</a>
+//             </Row>
 
-            <Container>
-                <Row>
-                <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                    <Card product={product[0]} />
-                </Row>
-            </Container>
-        </div>
-    )
-}
+//             <Container>
+//                 <Row>
+//                     {
+//                         newArrival.map((item) => <Card product={item} />)
+//                     }
+//                 </Row>
+//             </Container>
+
+//             <Row className="titl">
+//                 <a href="/collections/sale-50">SALE UP TO 50%</a>
+//             </Row>
+
+//             <Container>
+//                 <Row>
+//                     <Card product={product[0]} />
+//                     {
+//                         products.map((item) => <Card product={item} />)
+//                     }
+//                 </Row>
+//             </Container>
+//         </div>
+//     )
+// }
 
 export const Home = () => {
     const { authUser } = useContext(AuthUserCtx)
     const { setAuthUser } = useContext(AuthUserCtx)
-    // const fetchMeApi = useAuth()
-
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const result = await Axios
-    //         .get("http://localhost:5000/products/5fd5690a70b8ef178862f1aa")
-    //         .then((res) => { console.log(res.data) })
-    //         .catch((err) => { console.log(err)  })
-    //     }
-    //     fetchData()
-    // },[])
-
-    const fetchData = () => {
-        Axios
-        .get("http://localhost:5000/products/")
-        .then((res) => {console.log(res.data)})
-        .catch((err) => { console.log(err)})
-    }
 
     useEffect(() => {
         setAuthUser(getWithExpiry("myUser"))
         var obj = getWithExpiry("myUser")
         if (obj !== null) {
-            setWithExpiry("myUser", {username: obj.username, userId: obj.userId}, 100000)
+            setWithExpiry("myUser", { username: obj.username, userId: obj.userId }, 100000)
         }
-    },[])
-
-    useEffect(() => {
-        fetchData()
     }, [])
     const linkList =
         [{ type: "SALE OFF 50%", link: "/collections/sale-50" },
@@ -257,7 +260,7 @@ export const Home = () => {
                     <Row className="align-items-center">
                         <Col lg='3' className="brand">
                             <a href="/">
-                                <img src="https://image.freepik.com/free-vector/raven-esport-gaming-mascot-logo-template_20684-157.jpg" alt="swings-logo"/>
+                                <img src="https://image.freepik.com/free-vector/raven-esport-gaming-mascot-logo-template_20684-157.jpg" alt="swings-logo" />
                                 <span>SWINGS</span>
                             </a>
                         </Col>
@@ -269,10 +272,10 @@ export const Home = () => {
                         </Col>
                         <Col lg='2' className="icon-box">
                             <a href="/cart" className="icon">
-                                <FontAwesomeIcon  icon={faShoppingCart}/>
+                                <FontAwesomeIcon icon={faShoppingCart} />
                             </a>
                             <a href="/login" className="icon">
-                                <FontAwesomeIcon  icon={faUserCircle} />
+                                <FontAwesomeIcon icon={faUserCircle} />
                             </a>
                         </Col>
                     </Row>
@@ -301,15 +304,18 @@ export const Home = () => {
                         )} />
                     })
                 }
-                <Route path="/collections/:productId" name="product" component={ProductInfo}/>
+                <Route path="/collections/:productId" name="product" component={ProductInfo} />
+                <Route path="/collections">
+                    <Redirect from="/collections" to="/" />
+                </Route>
                 <Route path="/search" component={Search} />
                 <Route path="/login" component={Login} />
                 <Route path="/comment" component={Comment} />
                 <Route path="/register" exact component={Register} />
-                <Route path="/account/orders/:id" component={Transactions}/>
+                <Route path="/account/orders/:id" component={Transactions} />
                 <Route path="/account" component={Account} />
                 <Route path="/custom" component={Custom} />
-                <Route path='/' component={home} />
+                <Route path='/' component={Homapage} />
             </Switch>
 
             <Row className="footer-main">

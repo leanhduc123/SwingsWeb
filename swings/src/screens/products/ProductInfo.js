@@ -38,7 +38,6 @@ const countStar = (rating) => {
 }
 
 export const ProductInfo = ({ match }) => {
-    // console.log(match.params.productId)
     const [product, setProduct] = useState(null)
     const [quantity, setQuantity] = useState(1);
     const [size, setSize] = useState(null);
@@ -51,7 +50,7 @@ export const ProductInfo = ({ match }) => {
     useEffect(() => {
         const fetchData = async () => {
             await Axios
-                .get("http://localhost:5000/products/5fd5de2925aca91fc47979fc")
+                .get("http://localhost:5000/products/" + match.params.productId)
                 .then((res) => {
                     setProduct(res.data.message)
                     setSize(res.data.message.size[0].toLowerCase())

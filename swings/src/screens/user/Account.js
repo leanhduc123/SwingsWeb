@@ -1,6 +1,6 @@
 import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, {useContext, useEffect} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import { Container, Row, Col, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { AuthUserCtx } from '../../context/authUser';
@@ -9,18 +9,23 @@ import Axios from 'axios'
 
 export const Account = () => {
     const { authUser, setAuthUser } = useContext(AuthUserCtx)
+    const [ user, setUser ] = useState(null)
     useEffect(() => {
         const fetchData = async () => {
             await Axios
                 .get("http://localhost:5000/" + authUser.userId)
                 .then((res) => {
-                   console.log(res.data.message)
+                   setUser(res.data.message)
                 })
                 .catch((err) => { console.log(err) })
         }
         fetchData()
     }, [])
     
+    if (user === null) {
+        return (<div></div>)
+    }
+
     return (
         <div style={{ paddingBottom: 50 }}>
             <div className="header-title">
@@ -48,10 +53,10 @@ export const Account = () => {
                         <div className="customer-sidebar">
                             <h3 className="title-detail">Thông tin tài khoản</h3>
                             <h2 className="fullName">lê đức</h2>
-                            <p>username: {authUser.username}</p>
-                            <p>email</p>
-                            <p>số điện thoại</p>
-                            <p>địa chỉ</p>
+                            <p>username: {user.name}</p>
+                            <p>email: {user.email}</p>
+                            <p>số điện thoại: {user.phone}</p>
+                            <p>địa chỉ: {user.address}</p>
                             <Link to="/custom" className="custom_account">
                                 Chỉnh sửa thông tin
                             </Link>

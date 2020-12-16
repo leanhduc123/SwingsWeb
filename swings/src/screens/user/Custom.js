@@ -17,16 +17,17 @@ export const Custom = () => {
     const [address, setAddress] = useState("")
     const [user, setUser] = useState(null)
 
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            Axios.get("http://localhost:5000/" + authUser.userId)
-            .then((res) => {setUser(res.data.message)})
-            .catch((err) => {console.log(err)})
-        }
-    },[])
+    // useEffect(() => {
+    //     const fetchUserProfile = async () => {
+    //         Axios.get("http://localhost:5000/" + authUser.userId)
+    //         .then((res) => {setUser(res.data.message)})
+    //         .catch((err) => {console.log(err)})
+    //     }
+    //     fetchUserProfile()
+    // },[])
 
     const updateProfile = async (user) => {
-        Axios.put("http://localhost:5000/5fd8894ad22f131d9cd3dd7f", user)
+        Axios.put("http://localhost:5000/" + authUser.userId, user)
             .then((res) => { console.log(res.data.message) })
             .catch((res) => { console.log(res) })
     }
@@ -37,12 +38,10 @@ export const Custom = () => {
             event.stopPropagation();
         }
         var userSample = {
-            username: user.usrname,
-            name: fullname,
-            email: email,
-            password: user.password,
-            address: address,
-            phone: phone,
+            name: fullname.trim(),
+            email: email.trim(),
+            address: address.trim(),
+            phone: phone.trim(),
         }
         updateProfile(userSample)
     }
