@@ -12,6 +12,7 @@ export const Transactions = ({ match }) => {
     console.log(match.params.id)
     const { authUser, setAuthUser } = useContext(AuthUserCtx)
     const [transactions, setTransactions] = useState(null)
+    const [user, setUser] = useState(null)
     useEffect(() => {
         const fetchData = async () => {
             await Axios
