@@ -12,6 +12,7 @@ router.post('/order', async (req, res, next) => {
         user: req.body.user,
         phone: req.body.user,
         address: req.body.address,
+        email: req.body.email,
         order: req.body.order,
         total: req.body.total,
         isOrderCompleted: true

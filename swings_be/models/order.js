@@ -12,6 +12,9 @@ const orderSchema = mongoose.Schema({
     address:{
         type: String
     },
+    email:{
+        type: String
+    },
     order: [
         {
             product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
