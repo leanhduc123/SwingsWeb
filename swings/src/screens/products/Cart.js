@@ -183,17 +183,17 @@ export const Cart = () => {
             event.preventDefault();
             event.stopPropagation();
         }
-        localStorage.setObj("cart", [])
-        localStorage.setItem('total', 0)
+        // localStorage.setObj("cart", [])
+        // localStorage.setItem('total', 0)
         var orderSchema = {
             user: username,
             email: email,
             phone: phone,
             address: address,
-            order: order,
+            order: [],
             total: total
         }
-        postOrder(order)
+        postOrder(orderSchema)
     }
 
 

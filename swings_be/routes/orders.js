@@ -69,7 +69,7 @@ router.delete("/:id", async (req, res) => {
     }
   });
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
     const orderId = req.params.id
     const orders = Order.findById({_id:orderId})
     if (orders){
