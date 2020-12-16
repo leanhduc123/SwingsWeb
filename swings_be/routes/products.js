@@ -32,7 +32,7 @@ router.get('/subcategory/:subcategory', async (req, res, next) =>{
         })
     }
 })
-router.get('/', async (req, res,next) => {
+router.get('/:name', async (req, res,next) => {
     const searchKeyword = req.query.searchKeyword
       ? {
           name: {
@@ -46,7 +46,7 @@ router.get('/', async (req, res,next) => {
     //     ? { price: 1 }
     //     : { price: -1 }
     //   : { _id: -1 };
-    const products = Product.find({...searchKeyword })
+    const products = await Product.find({...searchKeyword })
     //.sort(sortOrder);
     res.status(201).json({
         message: products
