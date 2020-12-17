@@ -52,7 +52,7 @@ export const ProductInfo = ({ match }) => {
     useEffect(() => {
         const fetchData = async () => {
             await Axios
-                .get("http://localhost:5000/products/" + match.params.productId)
+                .get("http://localhost:5000/products/product/" + match.params.productId)
                 .then((res) => {
                     console.log(res.data.message)
                     setProduct(res.data.message)

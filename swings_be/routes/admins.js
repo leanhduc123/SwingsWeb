@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 const Admin = require('../models/admin');
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
     Admin.find({})
     .exec()
     .then(doc => {
@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
     });
 });
 
-router.post('/login', (req, res, next) => {
+router.post('/login', (req, res) => {
     Admin.find({username: req.body.username})
     .exec()
     .then(user => {

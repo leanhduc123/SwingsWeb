@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Order = require('../models/order');
-router.post('/order', async (req, res, next) => {
+router.post('/order', async (req, res) => {
     const order = new Order({
         id: new mongoose.Types.ObjectId(),
         user: req.body.user,
@@ -26,29 +26,43 @@ router.post('/order', async (req, res, next) => {
     })
 })
 
-router.get("/",async (req, res, next) => {
+router.get("/",async (req, res) => {
     const orders = await Order.find({}).populate('user');
-    res.status(201).json({
-        message: orders
-    });
+    if (orders){
+        res.status(201).json({
+            message: orders
+        });
+    } else {
+        res.status(404).json({
+            message4: 'Not Found'
+        })
+    }
 });
 
 
-router.get("/me",async (req, res, next) => {
+router.get("/me",async (req, res) => {
     const orders = await Order.find({ user: req.user._id });
-    res.status(201).json({
-        message: orders
-    });
+    if (orders){
+        res.status(201).json({
+            message: orders
+        });
+    } else {
+        res.status(501).json({
+            message: 'Not Found'
+        })
+    }
 });
 
-router.get('/:id',(req, res, next) => {
+router.get('/:id',(req, res) => {
       const order = Order.findById(req.params.id);
       if (order) {
         res.status(201).json({
             message:order
         })
       } else {
-        res.status(404).send({ message: 'Not found' });
+        res.status(404).json({ 
+            message: 'Not found' 
+        });
       }
     }
 )
@@ -61,11 +75,11 @@ router.delete("/:id", async (req, res) => {
             message: deletedOrder
         })
     } else {
-      res.status(404).send("Not found")
+        res.status(404).send("Not found")
     }
   });
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', async (req, res) => {
     const orderId = req.params.id
     const orders = Order.findById({_id:orderId})
     if (orders){

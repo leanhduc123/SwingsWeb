@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Product = require('../models/product');
 const { route } = require('./admins');
 
-router.get('/category/:category', async (req, res, next) =>{
+router.get('/category/:category', async (req, res) =>{
     const category = req.params.category;
     const products = await Product.find({category:category})
     if (products) {
@@ -17,7 +17,7 @@ router.get('/category/:category', async (req, res, next) =>{
         })
     }
 })
-router.get('/subcategory/:subcategory', async (req, res, next) =>{
+router.get('/subcategory/:subcategory', async (req, res) =>{
     const subcategory = req.params.subcategory;
     const products = await Product.find({subcategory: subcategory})
     if (products) {
@@ -40,12 +40,18 @@ router.get('/:name', async (req, res,next) => {
         }
       : {};
     const products = await Product.find({...searchKeyword })
-    res.status(201).json({
-        message: products
-    })
+    if (products){
+        res.status(201).json({
+            message: products
+        })
+    } else {
+        res.status(404).json({
+            message: 'Not found'
+        })
+    }
 });
 
-router.get('/allProduct', async (req, res, next) => {
+router.get('/allProduct', async (req, res) => {
     const products = await Product.find()
     if (products){
         res.status(201).json({
@@ -59,7 +65,7 @@ router.get('/allProduct', async (req, res, next) => {
     }
 })
 
-router.post('/addProduct', async (req, res, next) => {
+router.post('/addProduct', async (req, res) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(), 
         name: req.body.name,
@@ -84,8 +90,9 @@ router.post('/addProduct', async (req, res, next) => {
     })
 });
 
-router.put('/:id',  async (req, res, next) =>{
+router.put('/:id',  async (req, res) =>{
     const productId = req.params.id;
+    console.log(productId)
     const product = await Product.findById(productId);
     if (product) {
       product.name = req.body.name
@@ -124,9 +131,9 @@ router.post('/:id/rating', async(req, res) => {
     }
 })
 
-router.get('/product/:id',async (req, res, next) => {
-    const id = req.params.id
-    const product = await Product.findById({_id: id})
+router.get('/product/:id',async (req, res) => {
+    //const product_id = req.params._id
+    const product = await Product.findOne({_id: req.params.id})
     console.log(req.params.id)
     if (product) {
         res.status(200).json({
@@ -139,7 +146,7 @@ router.get('/product/:id',async (req, res, next) => {
     }
 })
 
-router.delete('/:id',  async (req, res, next) => {
+router.delete('/:id',  async (req, res) => {
     const deletedProduct = await Product.findById(req.params.id);
     if (deletedProduct) { 
         await deletedProduct.remove()
@@ -148,7 +155,9 @@ router.delete('/:id',  async (req, res, next) => {
             
         });
     } else {
-        res.send('Error in Deletion.');
+        res.status(201).json({
+            message: 'Xóa khồn thành công'
+        });
     }
 });
   

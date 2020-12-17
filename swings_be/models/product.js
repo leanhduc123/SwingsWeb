@@ -37,13 +37,8 @@ const productSchema = mongoose.Schema({
     }],
     rating: [
         {
-            _id: mongoose.Schema.Types.ObjectId,
             userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
             score: String,
-            createdAt: {
-                type: Date,
-                default: Date.now()
-            }
         }
     ],
     createdAt: { 
