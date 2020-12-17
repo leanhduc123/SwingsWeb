@@ -4,14 +4,13 @@ const mongoose = require('mongoose');
 const Order = require('../models/order');
 router.post('/order', async (req, res) => {
     const order = new Order({
-        id: new mongoose.Types.ObjectId(),
-        user: req.body.user,
+        _id: new mongoose.Types.ObjectId(),
+        username: req.body.username,
         phone: req.body.user,
         address: req.body.address,
         email: req.body.email,
         order: req.body.order,
         total: req.body.total,
-        isOrderCompleted: false
     });
     await order.save()
     .then(order => {
@@ -26,8 +25,8 @@ router.post('/order', async (req, res) => {
     })
 })
 
-router.get("/",async (req, res) => {
-    const orders = await Order.find({}).populate('user');
+router.get("/allOrder",async (req, res) => {
+    const orders = await Order.find()
     if (orders){
         res.status(201).json({
             message: orders
@@ -40,8 +39,8 @@ router.get("/",async (req, res) => {
 });
 
 
-router.get("/me",async (req, res) => {
-    const orders = await Order.find({ user: req.user._id });
+router.get("/:username",async (req, res) => {
+    const orders = await Order.find({ username: req.params.username });
     if (orders){
         res.status(201).json({
             message: orders
@@ -53,11 +52,11 @@ router.get("/me",async (req, res) => {
     }
 });
 
-router.get('/:id',(req, res) => {
-      const order = Order.findById(req.params.id);
-      if (order) {
+router.get('/getOrder/:id',async (req, res) => {
+      const orders = await Order.findById({_id: req.params.id});
+      if (orders) {
         res.status(201).json({
-            message:order
+            message: orders
         })
       } else {
         res.status(404).json({ 
@@ -68,7 +67,7 @@ router.get('/:id',(req, res) => {
 )
 
 router.delete("/:id", async (req, res) => {
-    const order = Order.findOne({ _id: req.params.id });
+    const order = Order.findOne({ _id: req.params.id});
     if (order) {
         const deletedOrder = order.remove();
         res.status(201).json({
@@ -79,22 +78,21 @@ router.delete("/:id", async (req, res) => {
     }
   });
 
-router.put('/:id', async (req, res) => {
+router.put('/updateOrder/:id', async (req, res) => {
     const orderId = req.params.id
-    const orders = Order.findById({_id:orderId})
+    const orders = await Order.findById({_id:orderId})
     if (orders){
-        orders.order = req.body.order;
-        orders.address = req.body.address
-        const updateOrders = await Order.save()
+        //orders.order = req.body.order;
+        //orders.address = req.body.address
+        orders.isOrderCompleted = true
         res.status(201).json({
-            message: updateOrders
+            message: orders
         })
     } else {
         res.status(201).json({
             message: 'Not Found'
         })
     }
-
 });
 
 module.exports = router;

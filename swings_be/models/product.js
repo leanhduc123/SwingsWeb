@@ -21,23 +21,21 @@ const productSchema = mongoose.Schema({
         type: String 
     },
     image: [{
-        img: {
-            type: String,
-            required: true
-        }
+        type: String,
+        required: true
     }],
     discount: {
         type: String,
     },
     size: [{
-        size: {
-            type: String,
-            required: true
-        }
+        type: String,
+        required: true
     }],
     rating: [
         {
-            userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+            username: { 
+                type: String, 
+            },
             score: String,
         }
     ],
