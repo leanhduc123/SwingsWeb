@@ -119,7 +119,11 @@ router.put('/:id',  async (req, res) =>{
 router.post('/:id/rating', async(req, res) => {
     const product = await Product.findById(req.params.id)
     if (product) {
-        product.rating = req.body.rating
+        const rating = {
+            username : req.body.username,
+            score: Number(req.body.score)
+        }
+        product.rating.push( rating)
         const updatedProduct = await product.save()
         res.status(201).json({
             message: updatedProduct

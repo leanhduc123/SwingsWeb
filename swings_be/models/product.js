@@ -36,7 +36,7 @@ const productSchema = mongoose.Schema({
             username: { 
                 type: String, 
             },
-            score: String,
+            score: Number,
         }
     ],
     createdAt: { 
@@ -46,5 +46,7 @@ const productSchema = mongoose.Schema({
     updatedAt: Date 
 
 });
+
+//const rateSchema = mongoose.Schema({})
 
 module.exports = mongoose.model('Product', productSchema);
