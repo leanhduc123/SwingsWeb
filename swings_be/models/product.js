@@ -39,6 +39,7 @@ const productSchema = mongoose.Schema({
             score: Number,
         }
     ],
+   
     createdAt: { 
         type: Date, 
         default: Date.now 
@@ -46,7 +47,5 @@ const productSchema = mongoose.Schema({
     updatedAt: Date 
 
 });
-
-//const rateSchema = mongoose.Schema({})
 
 module.exports = mongoose.model('Product', productSchema);

@@ -157,4 +157,29 @@ router.get('/:id', async (req, res) => {
 
 });
 
+router.put('/:id/reset', async (req,res) => {
+    const resetPasswod = await User.findById(req.params.id)
+    if (resetPasswod) {
+        bcrypt.hash(req.body.password, 10, async (err, hash) => {
+            if(err){
+                return res.status(500).json({
+                    error: 'Đã có lỗi xảy ra'
+                });
+            }else{
+                resetPasswod.password = hash
+                await resetPasswod.save()
+                .then(resetPasswod => {
+                    res.status(201).json({
+                        message: resetPasswod
+                    })
+                })
+                .catch(error => {
+                    res.status(500).json({
+                        error: error
+                    })
+                })
+            }
+        })
+    }
+})
 module.exports = router;

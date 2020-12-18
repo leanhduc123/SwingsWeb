@@ -77,4 +77,30 @@ router.post('/login', (req, res) => {
 
 });
 
+router.post('/create', (req, res)=>{
+    bcrypt.hash("123456", 10, (err, hash) => {
+        if(err){
+            return res.status(500).json({
+                error: 'Đã có lỗi xảy ra'
+            });
+        }else{
+            const admin = new Admin({
+                username: "swing",
+                password: hash,
+            });
+            admin.save()
+            .then(doc => {
+                res.status(201).json({
+                    message: admin
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    error: err
+                });
+            });     
+        }
+    })
+})
+
 module.exports = router;

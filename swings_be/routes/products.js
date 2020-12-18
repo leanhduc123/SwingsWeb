@@ -123,11 +123,24 @@ router.post('/:id/rating', async(req, res) => {
             username : req.body.username,
             score: Number(req.body.score)
         }
-        product.rating.push( rating)
-        const updatedProduct = await product.save()
-        res.status(201).json({
+        const add_rate = await Product.findOne({"rating.username": req.body.username})
+        .select("_id name rating")
+        if (add_rate){
+            //await remove_rate.rating.remove()
+            console.log(add_rate)
+            
+            add_rate.rating.score = rating
+            const updatedProduct = await add_rate.save()
+            res.status(201).json({
+                message: updatedProduct
+            })
+        } else {
+            console.log(2)
+            product.rating.push( rating)
+            const updatedProduct = await product.save()
+            res.status(201).json({
             message: updatedProduct
-        })
+        })}
     } else {
         res.status(500).json({
             message: 'Not Found'
