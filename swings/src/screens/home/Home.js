@@ -60,7 +60,7 @@ export const Home = () => {
         setAuthUser(getWithExpiry("myUser"))
         var obj = getWithExpiry("myUser")
         if (obj !== null) {
-            setWithExpiry("myUser", { username: obj.username, userId: obj.userId }, 100000)
+            setWithExpiry("myUser", { username: obj.username, userId: obj.userId }, 1000000)
         }
     }, [])
     const linkList =

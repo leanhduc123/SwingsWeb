@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useState} from 'react'
 import { Container, Modal } from 'react-bootstrap'
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -51,7 +51,7 @@ export const Login = () => {
       .then((res) => {
         setAuthUser(res.data.user);
         
-        setWithExpiry("myUser", {username: res.data.message.user.username, userId: res.data.message.user.userId}, 100000)
+        setWithExpiry("myUser", {username: res.data.message.user.username, userId: res.data.message.user.userId}, 1000000)
         setRegisting(true)
       })
       .catch((err) => {
@@ -105,8 +105,8 @@ export const Login = () => {
               <Field className="field" type="text" name="username" value={values.username}/>
               <ErrorMessage className="error" name="username" component="div" />
               <label>Password</label>
-              <Field className="field" type="password" name="password" />
-              <ErrorMessage className="error" name="password" component="div" value={values.password}/>
+              <Field className="field" type="password" name="password" value={values.password}/>
+              <ErrorMessage className="error" name="password" component="div" />
 
               <div className="button-wrapper">
                 <button
