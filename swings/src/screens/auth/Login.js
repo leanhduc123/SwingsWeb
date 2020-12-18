@@ -13,9 +13,9 @@ export const Login = () => {
   const [show, setShow] = useState(false);
   const [login, setLogin] = useState(false);
 
-  useEffect(() => {
-    console.log("prepare login: " + authUser)
-  }, [authUser])
+  // useEffect(() => {
+  //   console.log("prepare login: " + authUser)
+  // }, [authUser])
 
   const [registing, setRegisting] = useState(false)
   
@@ -49,15 +49,12 @@ export const Login = () => {
         password: values.password,
       })
       .then((res) => {
-        console.log(res.data)
         setAuthUser(res.data.user);
         
         setWithExpiry("myUser", {username: res.data.message.user.username, userId: res.data.message.user.userId}, 100000)
         setRegisting(true)
       })
-      .then(() => {console.log("Login: " + authUser)})
       .catch((err) => {
-        console.log(err)
         setError(true)
         setShow(true)
       })
@@ -65,17 +62,11 @@ export const Login = () => {
         setLogin(false)
       });
   };
-  function onClick_Login() {
-    console.log("Clicked to Login!");
-    setAuthUser("hello")
-    console.log("Click login" + authUser)
-  }
-
-  useEffect(() => {
-    console.log(registing)
-  }, [registing])
-
-  
+  // function onClick_Login() {
+  //   console.log("Clicked to Login!");
+  //   setAuthUser("hello")
+  //   console.log("Click login" + authUser)
+  // }
 
   if (localStorage.getItem('myUser') !== null && registing) {
     return <Redirect to="/" />

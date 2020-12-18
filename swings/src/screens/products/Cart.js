@@ -151,11 +151,9 @@ export const Cart = () => {
         } else {
             setShow(true)
             var items = localStorage.getObj("cart")
-            console.log(items)
             var arr = []
             var index
             for (index of items) {
-                console.log(index)
                 arr.push({
                     product: index.id,
                     price: index.price,
@@ -173,7 +171,9 @@ export const Cart = () => {
 
     const postOrder = async (order) => {
         return Axios.post("http://localhost:5000/order/order", order)
-        .then((res) => {console.log(res.data.message)})
+        .then((res) => {
+            // console.log(res.data.message)
+        })
         .catch((err) => {console.log(err)})
     }
 

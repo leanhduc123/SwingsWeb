@@ -70,7 +70,6 @@ export const Account = () => {
                 .get("http://localhost:5000/" + authUser.userId)
                 .then((res) => {
                     setUser(res.data.message)
-                    console.log(res.data.message)
                 })
                 .catch((err) => { console.log(err) })
         }

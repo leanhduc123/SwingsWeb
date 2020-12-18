@@ -51,7 +51,6 @@ export const Register = () => {
       .catch((err) => {
         setError(true);
         setSuccess(false);
-        console.log(err.messages)
       })
       .finally(() => {
         setRegistering(false);

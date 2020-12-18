@@ -48,7 +48,6 @@ export const Product = () => {
     e.preventDefault()
     let arr = products
     setProducts(arr.filter(product => product.name !== productName))
-    console.log(arr)
   }
 
   useEffect(() => {}, [products]);

@@ -16,7 +16,6 @@ export const Search = ({ location }) => {
                         arr.push(res.data.message[index])
                     }
                     setProduct(arr)
-                    console.log(res.data.message)
                 })
                 .catch((err) => { console.log(err) })
         }

@@ -11,7 +11,6 @@ export const TransactionItem = ({item}) => {
                 .get("http://localhost:5000/products/product/" + item.product)
                 .then((res) => {
                     setProduct(res.data.message)
-                    console.log(res.data.message)
                 })
                 .catch((err) => { console.log(err) })
         }

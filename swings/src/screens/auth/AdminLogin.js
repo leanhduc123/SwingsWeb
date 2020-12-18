@@ -22,10 +22,6 @@ export const AdminLogin = () => {
   const [login, setLogin] = useState(false);
   const [registing, setRegisting] = useState(false)
 
-  useEffect(() => {
-    console.log("prepare login: " + authAdmin)
-  }, [authAdmin])
-
   const initialValues_ = {
     username: "",
     password: "",
@@ -48,14 +44,12 @@ export const AdminLogin = () => {
         password: values.password,
       })
       .then((res) => {
-        console.log(res.data)
         setAuthAdmin(res.data.user);
         
         setWithExpiry("myUser", {username: res.data.message.user.username, userId: res.data.message.user.userId}, 100000)
         setRegisting(true)
       })
       .catch((err) => {
-        console.log(err)
         setError(true)
         setShow(true)
       })
@@ -64,9 +58,7 @@ export const AdminLogin = () => {
       });
   };
   function onClick_Login() {
-    console.log("Clicked to Login!");
     setAuthAdmin("hello")
-    console.log("Click login" + authAdmin)
   }
   return (
     <Formik

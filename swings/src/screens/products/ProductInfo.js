@@ -53,7 +53,6 @@ export const ProductInfo = ({ match }) => {
             await Axios
                 .get("http://localhost:5000/products/product/" + match.params.productId)
                 .then((res) => {
-                    console.log(res.data.message)
                     setProduct(res.data.message)
                     setSize(res.data.message.size[0].toLowerCase())
                     setStar(countStar(res.data.message.rating))
@@ -119,18 +118,18 @@ export const ProductInfo = ({ match }) => {
 
     const updateRating = async(rating) => {
         return Axios.post("http://localhost:5000/products/" + product._id + "/rating", rating)
-        .then((res) => {console.log(res)})
+        .then((res) => {
+            // console.log(res)
+        })
         .catch((err) => {console.log(err)})
     }
 
     const ratingChanged = (newRating) => {
         setStar(newRating)
-        console.log(authUser)
         if (authUser) {
             var rating = product.rating
             var index = rating.find(item => item.username === authUser.username)
             if (index) {
-                console.log(index)
                 index.score = newRating
             } else {
                 rating.push({

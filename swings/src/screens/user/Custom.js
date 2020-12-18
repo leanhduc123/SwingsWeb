@@ -49,7 +49,9 @@ export const Custom = () => {
 
     const updateProfile = async (user) => {
         Axios.put("http://localhost:5000/" + authUser.userId, user)
-            .then((res) => { console.log(res.data.message) })
+            .then((res) => { 
+                // console.log(res.data.message) 
+            })
             .catch((res) => { console.log(res) })
     }
     const handleSubmit = (event) => {

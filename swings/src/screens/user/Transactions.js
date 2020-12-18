@@ -26,7 +26,7 @@ export const Transactions = ({ match }) => {
         const fetchTransactions = async () => {
             await Axios
                 .get("http://localhost:5000/order/getOrder/" + match.params.id)
-                .then((res) => { setTransactions(res.data.message); console.log(res.data.message) })
+                .then((res) => { setTransactions(res.data.message) })
                 .catch((err) => { console.log(err) })
         }
         if (authUser !== null) {
