@@ -41,7 +41,7 @@ export const Custom = () => {
     // useEffect(() => {
     //     const fetchUserProfile = async () => {
     //         Axios.get("http://localhost:5000/" + authUser.userId)
-    //         .then((res) => {setUser(res.data.message)})
+    //         .then((res) => {setUser(res.data.message); console.log(res.data.message)})
     //         .catch((err) => {console.log(err)})
     //     }
     //     fetchUserProfile()
@@ -59,10 +59,10 @@ export const Custom = () => {
             event.stopPropagation();
         }
         var userSample = {
-            name: fullname.trim(),
-            email: email.trim(),
-            address: address.trim(),
-            phone: phone.trim(),
+            name: fullname,
+            email: email,
+            address: address,
+            phone: phone,
         }
         updateProfile(userSample)
     }

@@ -6,7 +6,6 @@ import "../../css/card.css"
 
 export const Card = (props) => {
     const { product } = props;
-    console.log(product)
     return (
         <Col md="3" className="item">
             <div>

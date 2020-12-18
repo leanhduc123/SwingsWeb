@@ -217,19 +217,19 @@ export const Cart = () => {
                         </Form.Group>
                         <Form.Group controlId="fullName">
                             <Form.Label>Họ tên</Form.Label>
-                            <Form.Control type="text" placeholder="Nhập họ tên người mua" defaultValue={fullname}/>
+                            <Form.Control type="text" placeholder="Nhập họ tên người mua" defaultValue={fullname} onChange={(e) => {setFullname(e.target.value)}}/>
                         </Form.Group>
                         <Form.Group controlId="email">
                             <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" placeholder="Nhập email" defaultValue={email}/>
+                            <Form.Control type="email" placeholder="Nhập email" defaultValue={email} onChange={(e) => {setEmail(e.target.value)}}/>
                         </Form.Group>
                         <Form.Group controlId="phoneNumber">
                             <Form.Label>Số điện thoại</Form.Label>
-                            <Form.Control type="text" placeholder="Nhập số điện thoại" defaultValue={phone}/>
+                            <Form.Control type="text" placeholder="Nhập số điện thoại" defaultValue={phone} onChange={(e) => {setPhone(e.target.value)}}/>
                         </Form.Group>
                         <Form.Group controlId="address">
                             <Form.Label>Địa chỉ</Form.Label>
-                            <Form.Control type="text" placeholder="Nhập địa chỉ" defaultValue={address}/>
+                            <Form.Control type="text" placeholder="Nhập địa chỉ" defaultValue={address} onChange={(e) => {setAddress(e.target.value)}} />
                         </Form.Group>
                         <Button variant="secondary" type="submit">
                             Gửi đơn hàng
