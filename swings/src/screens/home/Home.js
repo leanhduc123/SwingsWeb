@@ -76,7 +76,7 @@ export const Home = () => {
         { type: "QUẦN TÂY", link: "quan-tay" },
         { type: "QUẦN SHORT", link: "quan-short" },
         { type: "QUẦN KAKI", link: "quan-kaki" },
-        { type: "BALO-TÚI XÁCH", link: "balo-tui-xach" },
+        { type: "BALO-TÚI XÁCH", link: "balo" },
         { type: "GIÀY DÉP", link: "giay-dep" },
         { type: "GIẦY DA", link: "giay-da" },
         { type: "PHỤ KIỆN KHÁC", link: "phu-kien" },
@@ -88,8 +88,9 @@ export const Home = () => {
         { type: "ÁO KHOÁC BÒ", link: "ao-khoac-bo" },
         { type: "ÁO NỈ", link: "ao-ni" },
         { type: "ÁO HOODIE", link: "ao-hoodie" },
-        { type: "ÁO KHOÁC DA", link: "ao-khoac-da" }
-        ];
+        { type: "ÁO KHOÁC DA", link: "ao-khoac-da" },
+        { type: "Sản phẩm mùa đông", link: "sp-mua-dong" }
+    ];
     const list = [{
         type: "SẢN PHẨM",
         link: "/",
@@ -129,7 +130,7 @@ export const Home = () => {
         ]
     }, {
         type: "SP MÙA ĐÔNG",
-        link: "/",
+        link: "/collections/sp-mua-dong",
         sublist: [
             { type: "ÁO KHOÁC", link: "/collections/ao-khoac" },
             { type: "ÁO KHOÁC BÒ", link: "/collections/ao-khoac-bo" },
@@ -140,9 +141,6 @@ export const Home = () => {
     }, {
         type: "SALE UPTO 50%",
         link: "/collections/sale-50"
-    }, {
-        type: "BÌNH LUẬN",
-        link: "/comment"
     }]
 
     return (
@@ -158,7 +156,7 @@ export const Home = () => {
                         </Col>
                         <Col lg='7' className="searchBar">
                             <form className="search-box" action="/search">
-                                <input type="text" placeholder="Nhập tên sản phẩm.." name="search" />
+                                <input type="search" id="search" placeholder="Nhập tên sản phẩm.." name="search" />
                                 <FontAwesomeIcon className="search-icon" icon={faSearch} />
                             </form>
                         </Col>
@@ -200,7 +198,7 @@ export const Home = () => {
                 <Route path="/collections">
                     <Redirect from="/collections" to="/" />
                 </Route>
-                <Route path="/search/:p" component={Search} />
+                <Route path="/search" component={Search} />
                 <Route path="/login" component={Login} />
                 <Route path="/comment" component={Comment} />
                 <Route path="/register" exact component={Register} />

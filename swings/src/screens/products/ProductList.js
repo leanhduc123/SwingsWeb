@@ -4,7 +4,7 @@ import { Card } from "../card/Card"
 import "../../css/productList.css"
 import Axios from 'axios'
 
-const category = ["ao", "quan", "balo-tui-xach", "giay-dep", "phu-kien"]
+const category = ["ao", "quan", "balo-tui-xach", "giay-dep", "phu-kien", "sp-mua-dong", "balo"]
 
 export const ProductList = ( props ) => {
     const [ selectedOption, setSelectedOption ] = useState("san_pham_noi_bat")
@@ -39,8 +39,13 @@ export const ProductList = ( props ) => {
         const fetchData = async (cate) => {
             return Axios.get("http://localhost:5000/products/" + cate + "/" + link)
             .then((res) => { 
-                setProductList(res.data.message)
-                setProduct(res.data.message)
+                var index;
+                    var arr = []
+                    for (index = res.data.message.length-1; index >= 0; index--){
+                        arr.push(res.data.message[index])
+                }
+                setProductList(arr)
+                setProduct(arr)
             })
             .catch((err) => {console.log(err)})
         }

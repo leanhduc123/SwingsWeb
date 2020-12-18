@@ -6,7 +6,8 @@ router.post('/order', async (req, res) => {
     const order = new Order({
         _id: new mongoose.Types.ObjectId(),
         username: req.body.username,
-        phone: req.body.user,
+        name: req.body.name,
+        phone: req.body.phone,
         address: req.body.address,
         email: req.body.email,
         order: req.body.order,

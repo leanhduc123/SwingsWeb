@@ -12,8 +12,12 @@ export const Homapage = () => {
         Axios
             .get("http://localhost:5000/products/allProduct")
             .then((res) => {
-                setProducts(res.data.message)
-                console.log(res.data.message)
+                var index;
+                var arr = []
+                for (index = res.data.message.length - 1; index >= 0; index--) {
+                    arr.push(res.data.message[index])
+                }
+                setProducts(arr.message)
                 var newArr = []
                 var saleArr = []
                 for (var i = res.data.message.length - 1; i > res.data.message.length - 9; i--) {
@@ -21,12 +25,12 @@ export const Homapage = () => {
                 }
                 setNewArrival(newArr)
                 var index = 0
-                for (var i = 0; i < res.data.message.length; i++) {
+                for (var i = 0; i < arr.length; i++) {
                     if (index === 8) {
                         break
                     }
-                    if (res.data.message[i].discount === "50") {
-                        saleArr.push(res.data.message[i])
+                    if (arr[i].discount === "50") {
+                        saleArr.push(arr[i])
                         index += 1
                     }
                 }
@@ -72,7 +76,7 @@ export const Homapage = () => {
             <Container>
                 <Row>
                     {
-                       sale.map((item) => <Card product={item} />)
+                        sale.map((item) => <Card product={item} />)
                     }
                 </Row>
             </Container>

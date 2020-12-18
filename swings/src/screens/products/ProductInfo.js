@@ -9,7 +9,6 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Axios from 'axios'
 import { AuthUserCtx } from '../../context/authUser';
 
-const sizeList = ['s', 'm', 'l', 'xl', 'xll'];
 const hdList = [
     { type: "ÁO THUN", img: "//file.hstatic.net/200000201725/file/ao_thun_092f3b2909a54d498928f18b6e1ea020_master.jpg" },
     { type: "ÁO SƠ MI", img: "//file.hstatic.net/200000201725/file/ao_somi_53d4d8a813904c4ea0686f3112c2f571_master.jpg" },
@@ -78,7 +77,7 @@ export const ProductInfo = ({ match }) => {
                 setStar(product.rating[index].score)
             }
         }
-    },[authUser, product])
+    },[authUser])
 
 
     const update = () => {
@@ -126,11 +125,13 @@ export const ProductInfo = ({ match }) => {
 
     const ratingChanged = (newRating) => {
         setStar(newRating)
-        if (authUser !== null) {
+        console.log(authUser)
+        if (authUser) {
             var rating = product.rating
             var index = rating.find(item => item.username === authUser.username)
             if (index) {
-                rating[index].score = newRating
+                console.log(index)
+                index.score = newRating
             } else {
                 rating.push({
                     username: authUser.username,

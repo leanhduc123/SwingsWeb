@@ -4,19 +4,24 @@ import "../../css/search.css"
 import { Card } from '../card/Card'
 import Axios from 'axios'
 
-export const Search = ({ match }) => {
+export const Search = ({ location }) => {
     const [product, setProduct] = useState(null)
     useEffect(() => {
         const fetchData = async () => {
-            return Axios.get("http://localhost:5000/products/:name?searchKeyword=" + match.params.p)
-            .then((res) => { 
-                setProduct(res.data.message)
-                console.log(res.data.message)
-            })
-            .catch((err) => {console.log(err)})
+            return Axios.get("http://localhost:5000/products/:name?searchKeyword=" + location.search.split("=")[1])
+                .then((res) => {
+                    var index;
+                    var arr = []
+                    for (index = res.data.message.length - 1; index >= 0; index--) {
+                        arr.push(res.data.message[index])
+                    }
+                    setProduct(arr)
+                    console.log(res.data.message)
+                })
+                .catch((err) => { console.log(err) })
         }
         fetchData()
-    },[])
+    }, [])
     return (
         <Container>
             <Row className="wrap-heading">
@@ -26,10 +31,10 @@ export const Search = ({ match }) => {
                 </div>
             </Row>
             <Row>
-                <p>Kết quả tìm kiếm cho {match.params.p}</p>
+                <p>Kết quả tìm kiếm cho {location.search.split("=")[1]}</p>
             </Row>
             <Row>
-                {  (product !== null)
+                {(product !== null)
                     ? product.map(item => <Card product={item} />)
                     : <div></div>
                 }

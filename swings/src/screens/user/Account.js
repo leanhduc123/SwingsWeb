@@ -2,26 +2,49 @@ import { faDotCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useContext, useEffect, useState } from 'react'
 import { Container, Row, Col, Table } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { AuthUserCtx } from '../../context/authUser';
 import "../../css/account.css"
 import Axios from 'axios'
-const Item = ({product}) => {
-    function formatDate(date, format) {
+
+const getWithExpiry = (key) => {
+    const itemStr = localStorage.getItem(key)
+
+    // if the item doesn't exist, return null
+    if (!itemStr) {
+        return null
+    }
+
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    // compare the expiry time of the item with the current time
+    if (now.getTime() > item.expiry) {
+        // If the item is expired, delete the item from storage
+        // and return null
+        localStorage.removeItem(key)
+        return null
+    }
+    return item.user
+}
+
+const Item = ({ product }) => {
+    function formatDate(dateStr, format) {
+        var date = new Date(Date.parse(dateStr))
         const map = {
             mm: date.getMonth() + 1,
             dd: date.getDate(),
             yy: date.getFullYear().toString().slice(-2),
             yyyy: date.getFullYear()
         }
-    
+
         return format.replace(/mm|dd|yy|yyy/gi, matched => map[matched])
     }
     return (
         <tr>
             <td className="order_id text-center">
                 <Link to={"/account/orders/" + product._id} className="transactionId">
-                    {"#" + product._id.substr(0, 6) + "..."}
+                    {"#" + product._id}
                 </Link>
             </td>
             <td className="date text-center">
@@ -43,7 +66,7 @@ export const Account = () => {
     const [transactions, setTransactions] = useState(null)
     useEffect(() => {
         const fetchData = async () => {
-            await Axios
+            return await Axios
                 .get("http://localhost:5000/" + authUser.userId)
                 .then((res) => {
                     setUser(res.data.message)
@@ -52,21 +75,31 @@ export const Account = () => {
                 .catch((err) => { console.log(err) })
         }
         const fetchTransactions = async () => {
-            await Axios
-                .get("http://localhost:5000/order/name/" + authUser.username)
-                .then((res) => { setTransactions(res) })
+            return await Axios
+                .get("http://localhost:5000/order/" + authUser.username)
+                .then((res) => { 
+                    var index;
+                    var arr = []
+                    for (index = res.data.message.length-1; index >= 0; index--){
+                        arr.push(res.data.message[index])
+                    }
+                    setTransactions(arr); 
+                })
                 .catch((err) => { console.log(err) })
         }
-        console.log(authUser)
-        fetchData()
-        // fetchTransactions()
-    }, [])
+        if (authUser !== null) {
+            fetchData()
+            fetchTransactions()
+        }
+    }, [authUser])
 
-    if (user === null) {
-        return (<div></div>)
+    if (authUser === null) {
+        return (<Redirect to="/login" />)
     }
 
-    
+    if (user === null) {
+        return <div></div>
+    }
 
     return (
         <div style={{ paddingBottom: 50 }}>
@@ -119,8 +152,8 @@ export const Account = () => {
                                         <tbody>
                                             {
                                                 transactions !== null
-                                                ? transactions.map((item) => <Item product={item}/>)
-                                                : <div></div>
+                                                    ? transactions.map((item) => <Item product={item} />)
+                                                    : <div></div>
                                             }
                                         </tbody>
                                     </Table>

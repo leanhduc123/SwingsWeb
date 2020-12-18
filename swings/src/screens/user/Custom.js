@@ -3,10 +3,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Axios from 'axios'
 import React, { useContext, useState, useEffect } from 'react'
 import { Container, Row, Col, Button, Form } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import * as Yup from "yup";
 import { AuthUserCtx } from '../../context/authUser'
 import "../../css/custom.css"
+
+const getWithExpiry = (key) => {
+    const itemStr = localStorage.getItem(key)
+
+    // if the item doesn't exist, return null
+    if (!itemStr) {
+        return null
+    }
+
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    // compare the expiry time of the item with the current time
+    if (now.getTime() > item.expiry) {
+        // If the item is expired, delete the item from storage
+        // and return null
+        localStorage.removeItem(key)
+        return null
+    }
+    return item.user
+}
 
 
 export const Custom = () => {
@@ -47,6 +68,10 @@ export const Custom = () => {
     }
     const onChange = (event, setValue) => {
         setValue(event.currentTarget.value)
+    }
+
+    if (authUser === null) {
+        return (<Redirect to="/login" />)
     }
 
     return (

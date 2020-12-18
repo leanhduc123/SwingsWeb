@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthUserCtx } from '../../context/authUser';
 import { Container, Row, Col, Table } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import "../../css/transactions.css"
 import Axios from 'axios'
 import { TransactionItem } from './TransactionItem';
@@ -25,18 +25,28 @@ export const Transactions = ({ match }) => {
         }
         const fetchTransactions = async () => {
             await Axios
-                .get("http://localhost:5000/order/id" + match.params.id)
-                .then((res) => { setTransactions(res) })
+                .get("http://localhost:5000/order/getOrder/" + match.params.id)
+                .then((res) => { setTransactions(res.data.message); console.log(res.data.message) })
                 .catch((err) => { console.log(err) })
         }
-        console.log(authUser)
-        fetchData()
-        fetchTransactions()
-    }, [])
+        if (authUser !== null) {
+            fetchData()
+            fetchTransactions()
+        }
+    }, [authUser])
 
-    if (user === null || transactions === null) {
+    if (authUser === null) {
+        return (<Redirect to="/login" />)
+    }
+
+    if (user === null) {
         return (<div></div>)
     }
+
+    if (transactions === null) {
+        return (<div></div>)
+    }
+
     return (
         <div style={{ paddingBottom: 50 }}>
             <div className="header-title">
@@ -63,8 +73,8 @@ export const Transactions = ({ match }) => {
                     <Col md={9}>
                         <div className="customer-sidebar">
                             <h3 className="title-detail">ĐƠN HÀNG: {"#" + match.params.id}</h3>
-                            <h2 className="fullName">{user.name}</h2>
-                            <p>username: {user.username}</p>
+                            <h2 className="fullName">{transactions.name}</h2>
+                            <p>username: {transactions.username}</p>
                             <p>email: {transactions.email}</p>
                             <p>số điện thoại: {transactions.phone}</p>
                             <p>địa chỉ: {transactions.address}</p>

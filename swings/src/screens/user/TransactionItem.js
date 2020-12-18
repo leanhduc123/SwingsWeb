@@ -8,7 +8,7 @@ export const TransactionItem = ({item}) => {
     useEffect(() => {
         const fetchData = async () => {
             await Axios
-                .get("http://localhost:5000/" + item.product)
+                .get("http://localhost:5000/products/product/" + item.product)
                 .then((res) => {
                     setProduct(res.data.message)
                     console.log(res.data.message)
@@ -24,18 +24,18 @@ export const TransactionItem = ({item}) => {
     return (
         <tr>
             <td className="">
-                <Link to={"/" + item.product} className="transactionId">
+                <Link to={"/collections/" + item.product} className="transactionId">
                     <img src={Object.keys(product.image[0]).map((key) => product.image[0][key]).join("")} />
                 </Link>
             </td>
             <td className="text-left">
-                <Link to={"/" + item.product} className="transactionId">
+                <Link to={"/collections/" + item.product} className="transactionId">
                     <span>{product.name}</span>
                 </Link>
-                <span>{item.size}</span>
+                <span>Size: {item.size}</span>
             </td>
             <td className="text-center">
-                <span>{item.product.substr(0,9) + "..."}</span>
+                <span>{item.product}</span>
             </td>
             <td className="text-right">
                 <span>{item.price}</span>
