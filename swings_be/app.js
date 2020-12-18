@@ -10,7 +10,7 @@ const adminRoutes = require('./routes/admins');
 
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
-
+const commentRoutes = require('./routes/comment')
 const orderRoutes = require('./routes/orders');
 
 mongoose.connect('mongodb://localhost/backend', {
@@ -32,6 +32,7 @@ app.use(bodyParser.json())
 app.use('/admin', adminRoutes);
 app.use('/', userRoutes); 
 app.use('/products', productRoutes);
+app.use('/comment',commentRoutes);
 app.use('/order',  orderRoutes);
 
 app.use((req, res, next) => {
