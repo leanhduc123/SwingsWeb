@@ -23,11 +23,10 @@ router.get('/', (req, res) => {
 
 router.post('/login', (req, res) => {
     Admin.find({username: req.body.username})
-    .exec()
     .then(user => {
         if(user.length <= 0){
             return res.status(500).json({
-                message: 'Something went wrong'
+                message: 'Đã xảy ra lỗi'
             });
         }else{
             // Load hash from your password DB.
@@ -49,7 +48,7 @@ router.post('/login', (req, res) => {
                         }
                         jwt.sign(payload, 'mysecretkey', function(err, token) {              
                             if(err){
-                                return res.status(200).json({
+                                return res.status(500).json({
                                     error: 'err'
                                 });
                             }else{
@@ -61,7 +60,7 @@ router.post('/login', (req, res) => {
                             
                         });
                     }else{
-                        res.status(200).json({
+                        res.status(500).json({
                             message: 'Đăng nhập thất bại'
                         })
                     }
