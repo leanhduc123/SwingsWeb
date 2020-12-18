@@ -13,13 +13,13 @@ export const Card = (props) => {
                 <div className={parseInt(product.discount) === 0 ? "no" : "product-sale"}>
                     <span>{"-" + product.discount + "%"}</span>
                 </div>
-                <Link className="name" to={`/collections/${product._id}`}>
+                <a className="name" href={`/collections/${product._id}`}>
                     <img className="img2" src={Object.keys(product.image[1]).map((key) => product.image[1][key]).join("")} alt={product.name} />
                     <img className="img1" src={Object.keys(product.image[0]).map((key) => product.image[0][key]).join("")} alt={product.name} />
-                </Link>
+                </a>
             </div>
             <div className="namePrice">
-                <Link className="name" to={`/collections/${product._id}`}>{product.name}</Link>
+                <a className="name" href={`/collections/${product._id}`}>{product.name}</a>
                 <div className="price">
                     <span className={(parseInt(product.discount) > 0) ? "discount" : "no discount"}>
                         {(product.price*parseInt(product.discount)/100).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}
