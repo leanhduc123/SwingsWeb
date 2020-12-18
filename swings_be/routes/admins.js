@@ -22,58 +22,55 @@ router.get('/', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-    Admin.find({username: req.body.username})
+    Admin.findOne({username: req.body.username})
+    .select('_id username email password')
+    .exec()
     .then(user => {
-        if(user.length <= 0){
-            return res.status(500).json({
-                message: 'Đã xảy ra lỗi'
-            });
-        }else{
-            // Load hash from your password DB.
-            //const user = user[0];
-            bcrypt.compare(req.body.password, user[0].password, function(err, result) {
-                // console.log('err', err);
-                // console.log('result', result);     
+        if(user){
+            bcrypt.compare(req.body.password, user.password, (err, result) => {
                 if(err){
                     return res.status(500).json({
-                        error: 'Đăng nhập thất bại'
-                    });
+                        message: 'Đăng nhập thất bại'
+                    })
                 }else{
                     if(result){
-                        // Create token
                         const payload = {
-                            userId: user[0]._id,
+                            userId: user._id,
+                            username: user.username, 
                             iat:  Math.floor(Date.now() / 1000) - 30,
-                            exp: Math.floor(Date.now() / 1000) + (60 * 60),
+                            exp: Math.floor(Date.now() / 1000) + (60 * 60 * 60 * 24),
                         }
-                        jwt.sign(payload, 'mysecretkey', function(err, token) {              
+                        jwt.sign(payload, 'mysecretkey', (err, token) => {
                             if(err){
-                                return res.status(500).json({
-                                    error: 'err'
+                                return res.status(500).JSON({
+                                    message: 'Xác thực thất bại'
                                 });
                             }else{
                                 res.status(200).json({
-                                    message: 'Đăng nhập thành công',
-                                    token: token
-                                });
+                                    message: {
+                                        token: token
+                                    }
+                                })
                             }
-                            
-                        });
+                        })
                     }else{
                         res.status(500).json({
-                            message: 'Đăng nhập thất bại'
-                        })
+                            message: 'Mật khẩu không chính xác'
+                        });
                     }
                 }
             });
+        }else{
+            res.status(500).json({
+                message: 'Username không tồn tại'
+            });
         }
     })
-    .catch(er => {
+    .catch(error => {
         res.status(500).json({
-            error: er
+            error: error
         });
-    });
-
+    })
 });
 
 router.post('/create', (req, res)=>{
