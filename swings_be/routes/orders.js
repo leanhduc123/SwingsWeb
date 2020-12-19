@@ -86,8 +86,9 @@ router.put('/updateOrder/:id', async (req, res) => {
         //orders.order = req.body.order;
         //orders.address = req.body.address
         orders.isOrderCompleted = true
+        const updateOrder = await orders.save()
         res.status(201).json({
-            message: orders
+            message: updateOrder
         })
     } else {
         res.status(201).json({
