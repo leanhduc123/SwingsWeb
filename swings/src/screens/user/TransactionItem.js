@@ -37,7 +37,7 @@ export const TransactionItem = ({item}) => {
                 <span>{item.product}</span>
             </td>
             <td className="text-right">
-                <span>{item.price}</span>
+                <span>{item.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}</span>
             </td>
             <td className="text-center">
                 <span>{item.quantity}</span>

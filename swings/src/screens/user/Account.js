@@ -54,7 +54,7 @@ const Item = ({ product }) => {
                 <span>{product.total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₫'}</span>
             </td>
             <td className="status text-center">
-                <span>{product.isOrderComplete ? "Đã xử lý" : "Chưa xử lý"}</span>
+                <span>{product.isOrderCompleted ? "Đã xử lý" : "Chưa xử lý"}</span>
             </td>
         </tr>
     )

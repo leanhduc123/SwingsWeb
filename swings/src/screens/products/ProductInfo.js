@@ -56,6 +56,7 @@ export const ProductInfo = ({ match }) => {
                     setProduct(res.data.message)
                     setSize(res.data.message.size[0].toLowerCase())
                     setStar(countStar(res.data.message.rating))
+                    console.log(res.data.message.rating)
                 })
                 .catch((err) => { console.log(err) })
         }
@@ -117,7 +118,7 @@ export const ProductInfo = ({ match }) => {
     }
 
     const updateRating = async(rating) => {
-        return Axios.post("http://localhost:5000/products/" + product._id + "/rating", rating)
+        return Axios.put("http://localhost:5000/products/rating/" + product._id, rating)
         .then((res) => {
             // console.log(res)
         })
@@ -128,6 +129,7 @@ export const ProductInfo = ({ match }) => {
         setStar(newRating)
         if (authUser) {
             var rating = product.rating
+            console.log(rating)
             var index = rating.find(item => item.username === authUser.username)
             if (index) {
                 index.score = newRating
@@ -137,7 +139,7 @@ export const ProductInfo = ({ match }) => {
                     score: newRating
                 })
             }
-            updateRating(rating)
+            // updateRating(["hello","size"])
         }
     };
 

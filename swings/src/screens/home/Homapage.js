@@ -60,7 +60,7 @@ export const Homapage = () => {
             </Row>
 
             <Row className="titl">
-                <a href="/collections/new-arrival">NEW ARRIVAL</a>
+                <a href="/">NEW ARRIVAL</a>
             </Row>
 
             <Container>

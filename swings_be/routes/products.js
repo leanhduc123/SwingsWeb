@@ -70,12 +70,13 @@ router.post('/addProduct', async (req, res) => {
         _id: new mongoose.Types.ObjectId(), 
         name: req.body.name,
         price: req.body.price,
-        description: req.body.description,
+        description: "",
         image: req.body.image,
-        discount: req.body.discount,
+        discount: "0",
         category: req.body.category,
         subcategory: req.body.subcategory,
-        size: req.body.size
+        size: req.body.size,
+        rating: [],
     });
     await product.save()
     .then(product => {
@@ -116,7 +117,7 @@ router.put('/:id',  async (req, res) =>{
 
 })
 
-router.put('/:id/rating', async(req, res) => {
+router.put('/rating/:id', async(req, res) => {
     const product = await Product.findById(req.params.id)
     if (product) {
         const rating = {
