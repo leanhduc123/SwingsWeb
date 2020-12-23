@@ -10,24 +10,36 @@ const categoryList = [
     { type: "BALO-TÚI XÁCH", link: "balo" },
     { type: "GIÀY DÉP", link: "giay" },
     { type: "PHỤ KIỆN KHÁC", link: "phu-kien" },
-    { type: "THẮT LƯNG", link: "that-lung" },
     { type: "SẢN PHẨM MÙA ĐÔNG", link: "sp-mua-dong" }
 ]
 
-const subcategoryList = [
+const ao = [
     { type: "ÁO SƠ MI", link: "ao-so-mi" },
     { type: "ÁO THUN", link: "ao-thun" },
     { type: "ÁO POLO", link: "ao-polo" },
-    { type: "ÁO LEN", link: "ao-len" },
     { type: "ÁO VEST", link: "ao-vest" },
+]
+
+const quan = [
     { type: "QUẦN JEAN", link: "quan-jean" },
     { type: "QUẦN DÀI", link: "quan-dai" },
     { type: "QUẦN TÂY", link: "quan-tay" },
     { type: "QUẦN SHORT", link: "quan-short" },
     { type: "QUẦN KAKI", link: "quan-kaki" },
     { type: "QUẦN JOGGER", link: "quan-jogger" },
+]
+
+const giay = [
     { type: "GIẦY DA", link: "giay-da" },
     { type: "GIẦY THỂ THAO", link: "giay-the-thao" },
+]
+
+const pk = [
+    { type: "THẮT LƯNG", link: "that-lung" },
+]
+
+const spmd = [
+    { type: "ÁO LEN", link: "ao-len" },
     { type: "ÁO KHOÁC", link: "ao-khoac" },
     { type: "ÁO KHOÁC BÒ", link: "ao-khoac-bo" },
     { type: "ÁO NỈ", link: "ao-ni" },
@@ -37,14 +49,17 @@ const subcategoryList = [
 ]
 
 export const AddProductForm = () => {
+    const size = ["S", "M", "L", "XL", "XXL"]
+    const sizeShoe = ["35", "36", "37", "38", "39", "40"]
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
     const [category, setCategory] = useState(categoryList[0].link)
-    const [subcategory, setSubcategory] = useState(subcategoryList[0].link)
+    const [subcategory, setSubcategory] = useState(ao[0].link)
+    const [subcategoryList, setSubcategoryList] = useState(ao)
     const [img1, setImg1] = useState("")
     const [img2, setImg2] = useState("")
-    const sizeList = ["S", "M", "L", "XL", "XXL"]
+    const [sizeList, setSizeList] = useState(size)
 
     const handleOpen = () => {
         setOpen(true);
@@ -54,24 +69,56 @@ export const AddProductForm = () => {
         setOpen(false);
     };
 
+    const handleChangeCate = (e) => {
+        const val = e.target.value
+        setCategory(val)
+        if (val === "ao") {
+            setSubcategoryList(ao)
+            setSubcategory(ao[0].link)
+            setSizeList(size)
+        } else if (val === "quan") {
+            setSubcategoryList(quan)
+            setSubcategory(quan[0].link)
+            setSizeList(size)
+        } else if (val === "giay") {
+            setSubcategoryList(giay)
+            setSubcategory(giay[0].link)
+            setSizeList(sizeShoe)
+        } else if (val === "sp-mua-dong") {
+            setSubcategoryList(spmd)
+            setSubcategory(spmd[0].link)
+            setSizeList(size)
+        } else if (val === "phu-kien") {
+            setSubcategoryList(pk)
+            setSubcategory(pk[0].link)
+            setSizeList(size)
+        } else {
+            setSubcategoryList(null)
+            setSubcategory("")
+            setSizeList(null)
+        }
+    }
+
     const postProduct = async (product) => {
         return await Axios
-        .post("http://localhost:5000/products/addProduct", product)
-        .then((res) => {
-            console.log(res.data.message)
-            setOpen(false)
-        })
-        .catch((err) => {console.log(err)})
-    } 
+            .post("http://localhost:5000/products/addProduct", product)
+            .then((res) => {
+                // console.log(res.data.message)
+                setOpen(false)
+            })
+            .catch((err) => { console.log(err) })
+    }
     const handleSubmit = (event) => {
         event.preventDefault();
         var arr = []
-        for (var index in sizeList){
-            if (document.getElementById("size-" + sizeList[index].toLowerCase()).checked){
-                arr.push(sizeList[index])
+        if (sizeList !== null) {
+            for (var index in sizeList) {
+                if (document.getElementById("size-" + sizeList[index].toLowerCase()).checked) {
+                    arr.push(sizeList[index])
+                }
             }
         }
-        if (name !== "" && price !== "" && img1 !== null && img2 !== null && arr.length > 0){
+        if (name !== "" && price !== "" && img1 !== null && img2 !== null) {
             var product = {
                 name: name,
                 price: price.toString(),
@@ -80,6 +127,7 @@ export const AddProductForm = () => {
                 subcategory: subcategory,
                 image: [img1, img2]
             }
+            console.log(product)
             postProduct(product)
         }
     };
@@ -113,28 +161,34 @@ export const AddProductForm = () => {
                             placeholder="Price"
                             onChange={(e) => { setPrice(e.target.value) }}
                         ></input>
-                        <select id="category" onChange={(e) => { setCategory(e.target.value) }}>
+                        <select id="category" onChange={handleChangeCate}>
                             {
                                 categoryList.map(item => <option value={item.link}>{item.type}</option>)
                             }
                         </select>
-                        <select id="subcategory" onChange={(e) => { setSubcategory(e.target.value) }}>
-                            {
-                                subcategoryList.map(item => <option value={item.link}>{item.type}</option>)
-                            }
-                        </select>
-                        <div className="size-checkbox">
-                            <input type="checkbox" id="size-s" name="size" value="S" />
-                            <label for="size-s">S</label>
-                            <input type="checkbox" id="size-m" name="size" value="M" />
-                            <label for="size-m">M</label>
-                            <input type="checkbox" id="size-l" name="size" value="L" />
-                            <label for="size-l">L</label>
-                            <input type="checkbox" id="size-xl" name="size" value="XL" />
-                            <label for="size-xl">XL</label>
-                            <input type="checkbox" id="size-xxl" name="size" value="XXL" />
-                            <label for="size-xxl">XXL</label>
-                        </div>
+                        {
+                            subcategoryList !== null
+                                ? <select id="subcategory" onChange={(e) => { setSubcategory(e.target.value) }}>
+                                    {
+                                        subcategoryList.map(item => <option value={item.link}>{item.type}</option>)
+                                    }
+                                </select>
+                                : <div></div>
+                        }
+                        {
+                            sizeList !== null
+                                ? <div className="size-checkbox">
+                                    {
+                                        sizeList.map(item => (
+                                            <span>
+                                                <input type="checkbox" id={"size-" + item.toLowerCase()} name="size" value={item.toUpperCase()} />
+                                                <label for={"size-" + item.toLowerCase()}>{item.toUpperCase()}</label>
+                                            </span>
+                                        ))
+                                    }
+                                </div>
+                                : <div></div>
+                        }
                         <input
                             type="text"
                             name="image1"
