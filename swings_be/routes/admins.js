@@ -109,6 +109,7 @@ router.put('/reset', async (req,res) => {
                 error: 'Đã có lỗi xảy ra'
             });
         }else{
+            admin.username = req.body.username
             admin.password = hash
             await admin.save()
             .then(admin => {
