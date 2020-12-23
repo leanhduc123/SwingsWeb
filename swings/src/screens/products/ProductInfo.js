@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Col, Container, Modal, Row } from 'react-bootstrap';
+import { Col, Container, Modal, Row, Spinner } from 'react-bootstrap';
 import "../../css/productInfo.css"
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -44,10 +44,9 @@ export const ProductInfo = ({ match }) => {
     const [size, setSize] = useState(null);
     const [img, setImg] = useState(hdList[0].img)
     const [star, setStar] = useState(0);
-
+    const [loading, setLoading] = useState(true)
     const [show, setShow] = useState(false);
     const [alert, setAlert] = useState(false);
-    console.log(match.params.productId)
     useEffect(() => {
         const fetchData = async () => {
             await Axios
@@ -56,7 +55,6 @@ export const ProductInfo = ({ match }) => {
                     setProduct(res.data.message)
                     setSize(res.data.message.size[0].toLowerCase())
                     setStar(countStar(res.data.message.rating))
-                    console.log(res.data.message.rating)
                 })
                 .catch((err) => { console.log(err) })
         }
@@ -77,7 +75,7 @@ export const ProductInfo = ({ match }) => {
                 setStar(product.rating[index].score)
             }
         }
-    },[authUser])
+    }, [authUser])
 
 
     const update = () => {
@@ -117,19 +115,19 @@ export const ProductInfo = ({ match }) => {
         setImg(target.img)
     }
 
-    const updateRating = async(rating) => {
+    const updateRating = async (rating) => {
+        console.log("vote")
         return Axios.put("http://localhost:5000/products/rating/" + product._id, rating)
-        .then((res) => {
-            // console.log(res)
-        })
-        .catch((err) => {console.log(err)})
+            .then((res) => {
+                // console.log(res)
+            })
+            .catch((err) => { console.log(err) })
     }
 
     const ratingChanged = (newRating) => {
         setStar(newRating)
         if (authUser) {
             var rating = product.rating
-            console.log(rating)
             var index = rating.find(item => item.username === authUser.username)
             if (index) {
                 index.score = newRating
@@ -139,7 +137,9 @@ export const ProductInfo = ({ match }) => {
                     score: newRating
                 })
             }
-            // updateRating(["hello","size"])
+            updateRating({
+                rating: rating
+            })
         }
     };
 
@@ -236,7 +236,6 @@ export const ProductInfo = ({ match }) => {
                     </Row>
                 </Col>
             </Container>
-
         </div>
     )
 }

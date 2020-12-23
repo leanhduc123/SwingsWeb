@@ -8,6 +8,7 @@ export const Homapage = () => {
     const [products, setProducts] = useState(null)
     const [newArrival, setNewArrival] = useState(null)
     const [sale, setSale] = useState(null)
+    const [loading, setLoading] = useState(true)
     const fetchData = async () => {
         Axios
             .get("http://localhost:5000/products/allProduct")
@@ -35,9 +36,10 @@ export const Homapage = () => {
                     }
                 }
                 setSale(saleArr)
+                setLoading(false)
             })
-            .catch((err) => { 
-                console.log(err) 
+            .catch((err) => {
+                console.log(err)
             })
     }
 
@@ -51,7 +53,6 @@ export const Homapage = () => {
     if (sale === null) {
         return (<div></div>)
     }
-
 
     return (
         <div>

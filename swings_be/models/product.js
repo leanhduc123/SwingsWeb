@@ -36,7 +36,9 @@ const productSchema = mongoose.Schema({
             username: { 
                 type: String, 
             },
-            score: Number,
+            score: {
+                type: Number
+            }
         }
     ],
    

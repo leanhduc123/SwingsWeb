@@ -25,6 +25,7 @@ export const Register = () => {
   const [isSuccess, setSuccess] = useState(false);
   const [isError, setError] = useState(false);
   const [show, setShow] = useState(false);
+  const [navigator, setNavigator] = useState(false)
 
   const initialValues_ = {
     username: "",
@@ -64,6 +65,11 @@ export const Register = () => {
     setFieldValue("fullname", "");
     setFieldValue("password", "");
     setFieldValue("confirmPassword", "");
+    setNavigator(true)
+  }
+
+  if (navigator) {
+    return <Redirect to="/login" />
   }
 
   return (

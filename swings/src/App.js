@@ -38,11 +38,6 @@ function App() {
   return (
     <div>
       <Switch>
-        {/* <Route path="/admin">
-          <AuthAdminCtx.Provider value={authAdminCtxValue}>
-            <AdminAuth />
-          </AuthAdminCtx.Provider>
-        </Route> */}
         <Route path="/">
           <AuthUserCtx.Provider value={authUserCtxValue}>
             <Home />

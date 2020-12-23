@@ -231,7 +231,7 @@ export const Cart = () => {
                             <Form.Label>Địa chỉ</Form.Label>
                             <Form.Control type="text" placeholder="Nhập địa chỉ" defaultValue={address} onChange={(e) => {setAddress(e.target.value)}} />
                         </Form.Group>
-                        <Button variant="secondary" type="submit">
+                        <Button variant="secondary" type="submit" disabled={fullname.trim() === "" || email.trim() === "" || phone.trim() === "" || address.trim() ===""}>
                             Gửi đơn hàng
                         </Button>
                     </Form>
