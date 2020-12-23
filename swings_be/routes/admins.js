@@ -81,6 +81,7 @@ router.post('/create', (req, res)=>{
             });
         }else{
             const admin = new Admin({
+                _id:new mongoose.Types.ObjectId(),
                 username: "swing",
                 password: hash,
             });
@@ -99,8 +100,8 @@ router.post('/create', (req, res)=>{
     })
 })
 
-router.put('/:username/reset', async (req,res) => {
-    const resetPasswod = await User.findOne(req.params.username)
+router.put('/:id/reset', async (req,res) => {
+    const resetPasswod = await Admin.findById(req.params.id)
     if (resetPasswod) {
         bcrypt.hash(req.body.password, 10, async (err, hash) => {
             if(err){
