@@ -102,7 +102,7 @@ router.post('/create', (req, res)=>{
 })
 
 router.put('/reset', async (req,res) => {
-    const admin = await Admin.findOne({"username": "swing"})
+    const admin = await Admin.findOne()  
     bcrypt.hash(req.body.password, 10, async (err, hash) => {
         if(err){
             return res.status(500).json({
