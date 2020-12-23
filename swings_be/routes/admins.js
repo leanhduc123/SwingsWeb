@@ -82,7 +82,7 @@ router.post('/create', (req, res)=>{
         }else{
             const admin = new Admin({
                 _id:new mongoose.Types.ObjectId(),
-                username: "swing",
+                username: "swings",
                 password: hash,
             });
             admin.save()
