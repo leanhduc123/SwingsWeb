@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const Admin = require('../models/admin');
+const { findOne } = require('../models/admin');
 
 router.get('/', (req, res) => {
     Admin.find({})
@@ -100,30 +101,28 @@ router.post('/create', (req, res)=>{
     })
 })
 
-router.put('/:id/reset', async (req,res) => {
-    const resetPasswod = await Admin.findById(req.params.id)
-    if (resetPasswod) {
-        bcrypt.hash(req.body.password, 10, async (err, hash) => {
-            if(err){
-                return res.status(500).json({
-                    error: 'Đã có lỗi xảy ra'
-                });
-            }else{
-                resetPasswod.password = hash
-                await resetPasswod.save()
-                .then(resetPasswod => {
-                    res.status(201).json({
-                        message: resetPasswod
-                    })
+router.put('/reset', async (req,res) => {
+    const admin = await Admin.findOne({"username": "swing"})
+    bcrypt.hash(req.body.password, 10, async (err, hash) => {
+        if(err){
+            return res.status(500).json({
+                error: 'Đã có lỗi xảy ra'
+            });
+        }else{
+            admin.password = hash
+            await admin.save()
+            .then(admin => {
+                res.status(201).json({
+                    message: admin
                 })
-                .catch(error => {
-                    res.status(500).json({
-                        error: error
-                    })
+            })
+            .catch(error => {
+                res.status(500).json({
+                    error: error
                 })
-            }
-        })
-    }
+            })
+        }
+    })
 })
 
 module.exports = router;
